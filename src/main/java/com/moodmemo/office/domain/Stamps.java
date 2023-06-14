@@ -4,17 +4,22 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
 //@NoArgsConstructor
 //@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Document(collection = "users")
-public class Users {
+@Document(collection = "stamps")
+public class Stamps {
 
+    @Id
     private String kakaoId;
-    private String username;
-    private int age;
-    private boolean gender;
-    private String job;
+    private Date date;
+    private String stamp;
+    private String memoLet;
+
+
 }
