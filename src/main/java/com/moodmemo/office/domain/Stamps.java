@@ -17,7 +17,6 @@ import java.util.Date;
 @Document(collection = "stamps")
 public class Stamps {
 
-    @Id
     private String kakaoId;
     private Date date;
     private String stamp;
