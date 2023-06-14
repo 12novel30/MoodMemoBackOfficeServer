@@ -6,6 +6,9 @@ import com.moodmemo.office.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -14,7 +17,7 @@ public class UserService {
 
     public UserDto.Response createUser(UserDto.Dummy request) {
 
-        return UserDto.Response.fromDocument(
+        return UserDto.Response.fromDocuments(
                 userRepository.save(
                         Users.builder()
                                 .age(request.getAge())
@@ -25,5 +28,12 @@ public class UserService {
                                 .build())
         );
 
+    }
+
+    public List<UserDto.Response> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserDto.Response::fromDocuments)
+                .collect(Collectors.toList());
     }
 }

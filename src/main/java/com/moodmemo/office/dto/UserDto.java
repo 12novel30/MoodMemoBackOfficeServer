@@ -28,7 +28,7 @@ public class UserDto {
         private String kakaoId;
         private String username;
 
-        public static Response fromDocument(Users user) {
+        public static Response fromDocuments(Users user) {
             return Response.builder()
                     .kakaoId(user.getKakaoId())
                     .username(user.getUsername())
