@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -16,12 +18,15 @@ public class StampService {
     private final StampRepository stampRepository;
 
     public StampDto.Response createStamp(StampDto.Dummy request) {
-
+        LocalDateTime ldt = request.getDateTime();
         return StampDto.Response.fromDocument(
                 stampRepository.save(
                         Stamps.builder()
                                 .kakaoId(request.getKakaoId())
-                                .date(request.getDate())
+                                .localDate(LocalDate.of(
+                                        ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth()))
+                                .localTime(LocalTime.of(
+                                        ldt.getHour(), ldt.getMinute()))
                                 .stamp(request.getStamp())
                                 .memoLet(request.getMemoLet())
                                 .build())
@@ -31,7 +36,6 @@ public class StampService {
 
     public DailyReportDto createDailyReport(String kakaoId) {
         // Todo - 날짜 일치하는거 확인하는 메소드 필요함
-        // Todo - 그래서 dateformat 한 번 갈아야 한다...
         return DailyReportDto.builder()
                 .kakaoId(kakaoId)
                 .date(LocalDate.now())
