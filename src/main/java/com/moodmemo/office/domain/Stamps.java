@@ -22,6 +22,7 @@ public class Stamps {
     private String kakaoId;
     private LocalDate localDate;
     private LocalTime localTime;
+    private LocalDateTime dateTime;
     private String stamp;
     private String memoLet;
 

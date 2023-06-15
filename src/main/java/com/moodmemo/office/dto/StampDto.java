@@ -22,7 +22,7 @@ public class StampDto {
     public static class Dummy {
         private String kakaoId;
         @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime dateTime;
         private String stamp;
         private String memoLet;
@@ -36,6 +36,7 @@ public class StampDto {
         private String kakaoId;
         private LocalDate localDate;
         private LocalTime localTime;
+        private LocalDateTime dateTime;
         private String stamp;
         private String memoLet;
 
@@ -44,6 +45,7 @@ public class StampDto {
                     .kakaoId(stamps.getKakaoId())
                     .localDate(stamps.getLocalDate())
                     .localTime(stamps.getLocalTime())
+                    .dateTime(stamps.getDateTime())
                     .stamp(stamps.getStamp())
                     .memoLet(stamps.getMemoLet())
                     .build();
