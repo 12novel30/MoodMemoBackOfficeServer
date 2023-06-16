@@ -47,6 +47,7 @@ public class StampService {
     public DailyReportDto.Response createDailyReport(String kakaoId) {
 
         // Todo - AI 에 어떻게 보내?;
+        // TODO - 준하랑 얘기할 것!
         DailyReportDto.Request toAI = getDailyReportRequestDto(kakaoId);
 
         // Todo - AI 에서 받은 결과를 바탕으로 DailyReportDto.Response 를 만들어서 반환
