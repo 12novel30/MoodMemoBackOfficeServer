@@ -35,4 +35,26 @@ public class UserDto {
                     .build();
         }
     }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Detail {
+        private String kakaoId;
+        private String username;
+        private int age;
+        private boolean gender;
+        private String job;
+
+        public static Detail fromDocuments(Users user) {
+            return Detail.builder()
+                    .kakaoId(user.getKakaoId())
+                    .username(user.getUsername())
+                    .age(user.getAge())
+                    .job(user.getJob())
+                    .gender(user.isGender())
+                    .build();
+        }
+    }
 }

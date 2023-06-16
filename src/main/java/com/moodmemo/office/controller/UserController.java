@@ -17,6 +17,8 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserController {
 
+    // TODO - 에러처리해야함
+
     private final UserService userService;
     private final StampService stampService;
 
@@ -26,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/dailyReport/{kakaoId}")
-    public DailyReportDto getDailyReport(@PathVariable final String kakaoId) {
+    public DailyReportDto.Response getDailyReport(@PathVariable final String kakaoId) {
         // Todo - 오늘 날짜 & 카카오 Id로 stamp list 를 조회 -> AI APi에 전달.
         // Todo - AI Api 에서 받은 결과를 FE에 전달.
         return stampService.createDailyReport(kakaoId);

@@ -1,12 +1,14 @@
 package com.moodmemo.office.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Getter
@@ -18,7 +20,9 @@ import java.util.Date;
 public class Stamps {
 
     private String kakaoId;
-    private Date date;
+    private LocalDate localDate;
+    private LocalTime localTime;
+    private LocalDateTime dateTime;
     private String stamp;
     private String memoLet;
 
