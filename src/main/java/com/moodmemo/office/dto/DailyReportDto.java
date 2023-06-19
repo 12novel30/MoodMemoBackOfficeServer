@@ -16,7 +16,7 @@ public class DailyReportDto {
     @NoArgsConstructor
     @Builder
     public static class Request {
-        private UserDto.Detail userDto;
+        private UserDto.SendAI userDto;
         private List<Stamps> todayStampList;
 
     }
