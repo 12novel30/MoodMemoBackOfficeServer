@@ -14,7 +14,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 import static com.moodmemo.office.code.OfficeCode.ENDDATE_TAIL;
 import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
@@ -25,6 +24,7 @@ import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
 public class StampService {
     private final StampRepository stampRepository;
     private final UserRepository userRepository;
+    private final AIService aiService;
 
     public StampDto.Response createStamp(StampDto.Dummy request) {
         LocalDateTime ldt = request.getDateTime();
@@ -45,25 +45,22 @@ public class StampService {
     }
 
     public DailyReportDto.Response createDailyReport(String kakaoId) {
-
-        // Todo - AI 에 어떻게 보내?;
-        // TODO - 준하랑 얘기할 것!
-        DailyReportDto.Request toAI = getDailyReportRequestDto(kakaoId);
-
-        // Todo - AI 에서 받은 결과를 바탕으로 DailyReportDto.Response 를 만들어서 반환
-        return DailyReportDto.Response.builder()
-                .kakaoId(kakaoId)
-                .date(LocalDate.now())
-                .username("이하은")
-                .title("오늘의 일기")
-                .bodyText("진짜 .. 진짜 자고 싶다 공부 너무 하기 싫다 아악 ... 시험 왜 보냐 진짜 ...")
-                .keyword(List.of("지겨움", "시험"))
-                .build();
+//        DailyReportDto.Request toAI = getDailyReportRequestDto(kakaoId);
+//        return DailyReportDto.Response.builder()
+//                .kakaoId(kakaoId)
+//                .date(LocalDate.now())
+//                .username("이하은")
+//                .title("오늘의 일기")
+//                .bodyText("진짜 .. 진짜 자고 싶다 공부 너무 하기 싫다 아악 ... 시험 왜 보냐 진짜 ...")
+//                .keyword(List.of("지겨움", "시험"))
+//                .build();
+        // TODO - openai.error.RateLimitError: That model is currently overloaded with other requests
+        return aiService.sendDailyReport(getDailyReportRequestDto(kakaoId));
     }
 
     private DailyReportDto.Request getDailyReportRequestDto(String kakaoId) {
         return DailyReportDto.Request.builder()
-                .userDto(UserDto.Detail.fromDocuments(
+                .userDto(UserDto.SendAI.fromDocuments(
                         userRepository.findByKakaoId(kakaoId)))
                 .todayStampList(
                         stampRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
