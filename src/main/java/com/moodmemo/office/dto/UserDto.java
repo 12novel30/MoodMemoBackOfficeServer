@@ -57,4 +57,28 @@ public class UserDto {
                     .build();
         }
     }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class SendAI {
+        private String kakaoId;
+        private String username;
+        private int age;
+        private String gender; // 여자, 남자
+        private String job;
+
+        public static SendAI fromDocuments(Users user) {
+            String gender = user.isGender() ? "남자" : "여자";
+            return SendAI.builder()
+                    .kakaoId(user.getKakaoId())
+                    .username(user.getUsername())
+                    .age(user.getAge())
+                    .job(user.getJob())
+                    .gender(gender)
+                    .build();
+        }
+
+    }
 }
