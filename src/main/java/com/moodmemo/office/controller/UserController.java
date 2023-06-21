@@ -27,7 +27,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/dailyReport/{kakaoId}")
+    @GetMapping(value = "/dailyReport/{kakaoId}", produces="application/json;charset=UTF-8")
     public DailyReportDto.Response getDailyReport(@PathVariable final String kakaoId) {
         // Todo - 오늘 날짜 & 카카오 Id로 stamp list 를 조회 -> AI APi에 전달.
         // Todo - AI Api 에서 받은 결과를 FE에 전달.
