@@ -4,12 +4,16 @@ import com.moodmemo.office.domain.Users;
 import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
@@ -54,11 +58,15 @@ public class UserService {
             userRepository.save(user);
         }
     }
+    private final DateTimeFormatter rankToBotFormat =
+            DateTimeFormatter.ofPattern("HH:mm");
 
     public String getMyRanking(String kakaoId) {
 
         int myStampCount = 0;
-        String returnFormat = "1주차 랭킹 (nn:nn 기준)" + "\n==========\n";
+        String returnFormat = "1주차 랭킹 (" +
+                LocalDateTime.now().format(rankToBotFormat) +
+                " 기준)" + "\n==========\n";
 
         int weekNum = stampService.validateWeek();
         List<UserDto.Rank> top1ForThisWeek =
