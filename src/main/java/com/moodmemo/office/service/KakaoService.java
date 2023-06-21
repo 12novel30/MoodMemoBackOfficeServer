@@ -50,11 +50,22 @@ public class KakaoService {
                 .build();
     }
 
-    public StampDto.Dummy getTimeChangedStampParams(Map<String, Object> params) {
+    public StampDto.Dummy getTimeChangedStampParams(Map<String, Object> params) throws JsonProcessingException {
         Map<String, Object> action_params = getParamsFromAction(params);
 
         // get timeStamp from params
-        String[] times = action_params.get(PARAMS_TIME.getDescription()).toString().split(":");
+        // TODO - mapper 삭제하고 age 파트 더 깔끔히 작성
+        ObjectMapper mapper = new ObjectMapper();
+        String time =
+                mapper.writeValueAsString(
+                        mapper.convertValue(
+                                mapper.convertValue(
+                                        mapper.convertValue(params.get("action"), Map.class)
+                                                .get("detailParams"), Map.class)
+                                        .get(PARAMS_TIME.getDescription()), Map.class)
+                                .get("origin")); // time = ""13:14""
+        String[] times = time.substring(1, time.length() - 1).split(":");
+
         // set timeStamp (edit ver)
         LocalDateTime dateTime = LocalDateTime.now();
         dateTime.withHour(Integer.parseInt(times[0])).withMinute(Integer.parseInt(times[1]));

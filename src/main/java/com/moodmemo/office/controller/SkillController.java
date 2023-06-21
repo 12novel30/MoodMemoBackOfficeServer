@@ -33,6 +33,7 @@ public class SkillController {
     public HashMap<String, Object> callUserInfoAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
         userService.createUser(kakaoService.getInfoParams(params));
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
+        // TODO - 이미 저장된 정보면 그거에 관련한 에러처리 보내기
         return kakaoService.getStringObjectHashMap("userInfo 발화리턴");
         // TODO - 다른 모든 메소드 에러처리
     }
