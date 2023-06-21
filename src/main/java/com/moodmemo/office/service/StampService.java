@@ -1,6 +1,7 @@
 package com.moodmemo.office.service;
 
 import com.moodmemo.office.domain.Stamps;
+import com.moodmemo.office.domain.Users;
 import com.moodmemo.office.dto.DailyReportDto;
 import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
@@ -99,33 +100,23 @@ public class StampService {
     }
 
     public List<UserDto.Rank> getTop1ForThisWeek(int validateWeek) {
-        if (validateWeek == 1) {
-            return userRepository.findTop1ByOrderByWeek1Desc()
-                    .stream()
-                    .map(UserDto.Rank::fromDocument)
-                    .collect(Collectors.toList());
-        }
-        else if (validateWeek == 2) {
-            return userRepository.findTop1ByOrderByWeek2Desc()
-                    .stream()
-                    .map(UserDto.Rank::fromDocument)
-                    .collect(Collectors.toList());
-        }
-        else if (validateWeek == 3) {
-            return userRepository.findTop1ByOrderByWeek3Desc()
-                    .stream()
-                    .map(UserDto.Rank::fromDocument)
-                    .collect(Collectors.toList());
-        }
-        else if (validateWeek == 4) {
-            return userRepository.findTop1ByOrderByWeek4Desc()
-                    .stream()
-                    .map(UserDto.Rank::fromDocument)
-                    .collect(Collectors.toList());
-        }
+        if (validateWeek == 1)
+            return convertorUsersToRank(userRepository.findTop1ByOrderByWeek1Desc());
+        else if (validateWeek == 2)
+            return convertorUsersToRank(userRepository.findTop1ByOrderByWeek2Desc());
+        else if (validateWeek == 3)
+            return convertorUsersToRank(userRepository.findTop1ByOrderByWeek3Desc());
+        else if (validateWeek == 4)
+            return convertorUsersToRank(userRepository.findTop1ByOrderByWeek4Desc());
         else {
             log.info("현재 주차가 없습니다.");
             return null;
         }
+    }
+
+    private List<UserDto.Rank> convertorUsersToRank(List<Users> usersList) {
+        return usersList.stream()
+                .map(UserDto.Rank::fromDocument)
+                .collect(Collectors.toList());
     }
 }
