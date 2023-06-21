@@ -81,4 +81,26 @@ public class UserDto {
         }
 
     }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Rank {
+        private String kakaoId;
+        private String username;
+        private int week1, week2, week3, week4;
+
+        public static Rank fromDocument(Users user) {
+            return Rank.builder()
+                    .kakaoId(user.getKakaoId())
+                    .username(user.getUsername())
+                    .week1(user.getWeek1())
+                    .week2(user.getWeek2())
+                    .week3(user.getWeek3())
+                    .week4(user.getWeek4())
+                    .build();
+        }
+
+    }
 }

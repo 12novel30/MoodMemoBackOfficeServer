@@ -18,4 +18,5 @@ public class Users {
     private int age;
     private boolean gender;
     private String job;
+    private int week1, week2, week3, week4;
 }

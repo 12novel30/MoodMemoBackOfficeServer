@@ -39,13 +39,24 @@ public class SkillController {
 
     @PostMapping("/stamp")
     public HashMap<String, Object> callStampAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
-        stampService.createStamp(kakaoService.getStampParams(params));
+        // save stamp
+        String kakaoId =
+                stampService.createStamp(
+                        kakaoService.getStampParams(params)).getKakaoId();
+        // update week n 의 스탬프 개수
+        userService.updateWeekCount(kakaoId, stampService.validateWeek());
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
         return kakaoService.getStringObjectHashMap("memolet 발화리턴");
     }
+
     @PostMapping("/timeChange-stamp")
     public HashMap<String, Object> callTimeChangedStampAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
-        stampService.createStamp(kakaoService.getTimeChangedStampParams(params));
+        // save stamp
+        String kakaoId =
+                stampService.createStamp(
+                        kakaoService.getTimeChangedStampParams(params)).getKakaoId();
+        // update week n 의 스탬프 개수
+        userService.updateWeekCount(kakaoId, stampService.validateWeek());
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
         return kakaoService.getStringObjectHashMap("시간 변경 버전 memolet 발화리턴");
     }
@@ -61,14 +72,16 @@ public class SkillController {
     @PostMapping("/userRank") // TODO
     public HashMap<String, Object> callUserRankAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
         /*
-        * 1. 현재 1등인 경우
-        *   - 1등이라고 알려주기
-        *   - 2등이 몇갠지 알려주기
-        * 2. 현재 1등 아닌 경우
-        *   - 1등이 몇갠지 알려주기
-        *   - 현재 내 개수 알려주기
-        * */
+         * 1. 현재 1등인 경우
+         *   - 1등이라고 알려주기
+         *   - 2등이 몇갠지 알려주기
+         * 2. 현재 1등 아닌 경우
+         *   - 1등이 몇갠지 알려주기
+         *   - 현재 내 개수 알려주기
+         * */
 
+        // 지금의 1등 찾기
+        stampService.getTop1ForThisWeek(stampService.validateWeek());
         return null;
     }
 

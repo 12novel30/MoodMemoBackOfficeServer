@@ -15,7 +15,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.moodmemo.office.code.EventCode.*;
 import static com.moodmemo.office.code.OfficeCode.ENDDATE_TAIL;
 import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
 
@@ -76,5 +78,54 @@ public class StampService {
                 Timestamp.valueOf(
                         date.plusDays(1)
                                 + ENDDATE_TAIL.getDescription()));
+    }
+
+    public int validateWeek() {
+        List<List<LocalDate>> weeks = List.of(
+                List.of(WEEK1.getStartDate(), WEEK1.getEndDate()),
+                List.of(WEEK2.getStartDate(), WEEK2.getEndDate()),
+                List.of(WEEK3.getStartDate(), WEEK3.getEndDate()),
+                List.of(WEEK4.getStartDate(), WEEK4.getEndDate()));
+
+        for (List<LocalDate> week : weeks) {
+            LocalDate today = LocalDate.now();
+            if (today.isAfter(week.get(0)) && today.isBefore(week.get(1))) {
+                int weekNum = weeks.indexOf(week) + 1;
+                log.info("현재 주차: {}", weekNum);
+                return weekNum;
+            }
+        }
+        return 0;
+    }
+
+    public List<UserDto.Rank> getTop1ForThisWeek(int validateWeek) {
+        if (validateWeek == 1) {
+            return userRepository.findTop1ByOrderByWeek1Desc()
+                    .stream()
+                    .map(UserDto.Rank::fromDocument)
+                    .collect(Collectors.toList());
+        }
+        else if (validateWeek == 2) {
+            return userRepository.findTop1ByOrderByWeek2Desc()
+                    .stream()
+                    .map(UserDto.Rank::fromDocument)
+                    .collect(Collectors.toList());
+        }
+        else if (validateWeek == 3) {
+            return userRepository.findTop1ByOrderByWeek3Desc()
+                    .stream()
+                    .map(UserDto.Rank::fromDocument)
+                    .collect(Collectors.toList());
+        }
+        else if (validateWeek == 4) {
+            return userRepository.findTop1ByOrderByWeek4Desc()
+                    .stream()
+                    .map(UserDto.Rank::fromDocument)
+                    .collect(Collectors.toList());
+        }
+        else {
+            log.info("현재 주차가 없습니다.");
+            return null;
+        }
     }
 }

@@ -36,4 +36,20 @@ public class UserService {
                 .map(UserDto.Response::fromDocuments)
                 .collect(Collectors.toList());
     }
+
+    public void updateWeekCount(String kakaoId, int weekNum) {
+        // TODO - 에러처리하기
+        Users user = userRepository.findByKakaoId(kakaoId);
+
+        if (weekNum == 1)
+            user.setWeek1(user.getWeek1() + 1);
+        else if (weekNum == 2)
+            user.setWeek2(user.getWeek2() + 1);
+        else if (weekNum == 3)
+            user.setWeek3(user.getWeek3() + 1);
+        else if (weekNum == 4)
+            user.setWeek4(user.getWeek4() + 1);
+
+        userRepository.save(user);
+    }
 }
