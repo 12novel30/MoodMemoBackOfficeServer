@@ -45,20 +45,14 @@ public class StampService {
     }
 
     public DailyReportDto.Response createDailyReport(String kakaoId) {
-//        DailyReportDto.Request toAI = getDailyReportRequestDto(kakaoId);
-//        return DailyReportDto.Response.builder()
-//                .kakaoId(kakaoId)
-//                .date(LocalDate.now())
-//                .username("이하은")
-//                .title("오늘의 일기")
-//                .bodyText("진짜 .. 진짜 자고 싶다 공부 너무 하기 싫다 아악 ... 시험 왜 보냐 진짜 ...")
-//                .keyword(List.of("지겨움", "시험"))
-//                .build();
-        // TODO - openai.error.RateLimitError: That model is currently overloaded with other requests
         return aiService.sendDailyReport(getDailyReportRequestDto(kakaoId));
     }
 
     private DailyReportDto.Request getDailyReportRequestDto(String kakaoId) {
+
+        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+
         return DailyReportDto.Request.builder()
                 .userDto(UserDto.SendAI.fromDocuments(
                         userRepository.findByKakaoId(kakaoId)))
@@ -66,10 +60,10 @@ public class StampService {
                         stampRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
                                 kakaoId,
                                 Timestamp.valueOf(
-                                        LocalDate.now().minusDays(1)
+                                        yesterday.minusDays(1)
                                                 + STARTDATE_TAIL.getDescription()),
                                 Timestamp.valueOf(
-                                        LocalDate.now().plusDays(1)
+                                        yesterday.plusDays(1)
                                                 + ENDDATE_TAIL.getDescription())))
                 .build();
     }
