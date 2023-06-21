@@ -15,6 +15,7 @@ public enum KakaoCode {
     PARAMS_JOB("job"),
     PARAMS_MEMOLET("memolet"),
     PARAMS_EMOTION("emotion"),
+    PARAMS_DATETIME("sys_number"), // TODO - 테스트 필요
     USER_ID("id"),
     ;
     private final String description;

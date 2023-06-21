@@ -2,6 +2,7 @@ package com.moodmemo.office.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moodmemo.office.domain.Stamps;
 import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +45,23 @@ public class KakaoService {
         return StampDto.Dummy.builder()
                 .kakaoId(getKakaoIdParams(params))
                 .dateTime(LocalDateTime.now())
+                .stamp(action_params.get(PARAMS_EMOTION.getDescription()).toString())
+                .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
+                .build();
+    }
+
+    public StampDto.Dummy getTimeChangedStampParams(Map<String, Object> params) {
+        Map<String, Object> action_params = getParamsFromAction(params);
+
+        // get timeStamp from params
+        String[] times = action_params.get(PARAMS_DATETIME.getDescription()).toString().split(":");
+        // set timeStamp (edit ver)
+        LocalDateTime dateTime = LocalDateTime.now();
+        dateTime.withHour(Integer.parseInt(times[0])).withMinute(Integer.parseInt(times[1]));
+
+        return StampDto.Dummy.builder()
+                .kakaoId(getKakaoIdParams(params))
+                .dateTime(dateTime)
                 .stamp(action_params.get(PARAMS_EMOTION.getDescription()).toString())
                 .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
                 .build();
@@ -105,5 +124,21 @@ public class KakaoService {
         ObjectMapper mapper = new ObjectMapper();
         String userRequest = mapper.writeValueAsString(params);
         return userRequest;
+    }
+
+    private final DateTimeFormatter stampListToBotFormat =
+            DateTimeFormatter.ofPattern("HH:mm");
+
+    public String getTextFormatForStampList(List<Stamps> stampList) {
+        String stampListText = "";
+        for (Stamps stamp : stampList)
+            stampListText +=
+                    "[" + stamp.getDateTime().format(stampListToBotFormat) + "] "
+                            + stamp.getStamp() + " : "
+                            + stamp.getMemoLet()
+                            + "\n";
+        return "오늘 남긴 스탬프리스트입니다!" +
+                "\n" + "=========="
+                + "\n" + stampListText;
     }
 }

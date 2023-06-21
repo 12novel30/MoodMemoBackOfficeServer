@@ -39,19 +39,36 @@ public class SkillController {
 
     @PostMapping("/stamp")
     public HashMap<String, Object> callStampAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
-        // TODO - 시간 변경하는 기능 구현 필요
         stampService.createStamp(kakaoService.getStampParams(params));
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
         return kakaoService.getStringObjectHashMap("memolet 발화리턴");
     }
+    @PostMapping("/timeChange-stamp")
+    public HashMap<String, Object> callTimeChangedStampAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
+        stampService.createStamp(kakaoService.getTimeChangedStampParams(params));
+        // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
+        return kakaoService.getStringObjectHashMap("시간 변경 버전 memolet 발화리턴");
+    }
 
-    @PostMapping("/stampList") // TODO
+    @PostMapping("/stampList") // TODO - checking
     public HashMap<String, Object> callStampListAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
-        return null;
+        return kakaoService.getStringObjectHashMap(
+                kakaoService.getTextFormatForStampList(
+                        stampService.getStampList(
+                                kakaoService.getKakaoIdParams(params))));
     }
 
     @PostMapping("/userRank") // TODO
     public HashMap<String, Object> callUserRankAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
+        /*
+        * 1. 현재 1등인 경우
+        *   - 1등이라고 알려주기
+        *   - 2등이 몇갠지 알려주기
+        * 2. 현재 1등 아닌 경우
+        *   - 1등이 몇갠지 알려주기
+        *   - 현재 내 개수 알려주기
+        * */
+
         return null;
     }
 

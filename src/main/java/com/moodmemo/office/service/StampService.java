@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import static com.moodmemo.office.code.OfficeCode.ENDDATE_TAIL;
 import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
@@ -56,15 +57,24 @@ public class StampService {
         return DailyReportDto.Request.builder()
                 .userDto(UserDto.SendAI.fromDocuments(
                         userRepository.findByKakaoId(kakaoId)))
-                .todayStampList(
-                        stampRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
-                                kakaoId,
-                                Timestamp.valueOf(
-                                        yesterday.minusDays(1)
-                                                + STARTDATE_TAIL.getDescription()),
-                                Timestamp.valueOf(
-                                        yesterday.plusDays(1)
-                                                + ENDDATE_TAIL.getDescription())))
+                .todayStampList(getStampList(kakaoId, yesterday))
                 .build();
+    }
+
+    public List<Stamps> getStampList(String kakaoId) {
+        // 오늘의 스탬프리스트를 요청.
+        LocalDate today = LocalDate.now();
+        return getStampList(kakaoId, today);
+    }
+
+    private List<Stamps> getStampList(String kakaoId, LocalDate date) {
+        return stampRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
+                kakaoId,
+                Timestamp.valueOf(
+                        date.minusDays(1)
+                                + STARTDATE_TAIL.getDescription()),
+                Timestamp.valueOf(
+                        date.plusDays(1)
+                                + ENDDATE_TAIL.getDescription()));
     }
 }
