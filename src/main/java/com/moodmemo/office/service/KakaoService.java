@@ -54,7 +54,7 @@ public class KakaoService {
         Map<String, Object> action_params = getParamsFromAction(params);
 
         // get timeStamp from params
-        String[] times = action_params.get(PARAMS_DATETIME.getDescription()).toString().split(":");
+        String[] times = action_params.get(PARAMS_TIME.getDescription()).toString().split(":");
         // set timeStamp (edit ver)
         LocalDateTime dateTime = LocalDateTime.now();
         dateTime.withHour(Integer.parseInt(times[0])).withMinute(Integer.parseInt(times[1]));
