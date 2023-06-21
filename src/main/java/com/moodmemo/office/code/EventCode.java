@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 public enum EventCode {
-    WEEK1(LocalDate.of(2023, 6, 21),
+    WEEK1(LocalDate.of(2023, 6, 3),
             LocalDate.of(2023, 6, 30)),
     WEEK2(LocalDate.of(2023, 7, 1),
             LocalDate.of(2023, 7, 2)),

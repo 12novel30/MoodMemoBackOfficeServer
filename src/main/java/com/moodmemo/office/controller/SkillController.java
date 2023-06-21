@@ -61,8 +61,10 @@ public class SkillController {
         return kakaoService.getStringObjectHashMap("시간 변경 버전 memolet 발화리턴");
     }
 
+    // TODO - 기타 스탬프 처리하는 방법 생각해보기
     @PostMapping("/stampList") // TODO - checking
     public HashMap<String, Object> callStampListAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
+        // TODO - 시간순으로 정렬하기 (최신순)
         return kakaoService.getStringObjectHashMap(
                 kakaoService.getTextFormatForStampList(
                         stampService.getStampList(
@@ -71,18 +73,9 @@ public class SkillController {
 
     @PostMapping("/userRank") // TODO
     public HashMap<String, Object> callUserRankAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
-        /*
-         * 1. 현재 1등인 경우
-         *   - 1등이라고 알려주기
-         *   - 2등이 몇갠지 알려주기
-         * 2. 현재 1등 아닌 경우
-         *   - 1등이 몇갠지 알려주기
-         *   - 현재 내 개수 알려주기
-         * */
-
-        // 지금의 1등 찾기
-        stampService.getTop1ForThisWeek(stampService.validateWeek());
-        return null;
+        return kakaoService.getStringObjectHashMap(
+                userService.getMyRanking(
+                        kakaoService.getKakaoIdParams(params)));
     }
 
 
