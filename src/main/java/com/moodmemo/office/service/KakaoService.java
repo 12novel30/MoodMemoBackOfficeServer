@@ -67,12 +67,15 @@ public class KakaoService {
         String[] times = time.substring(1, time.length() - 1).split(":");
 
         // set timeStamp (edit ver)
-        LocalDateTime dateTime = LocalDateTime.now();
-        dateTime.withHour(Integer.parseInt(times[0])).withMinute(Integer.parseInt(times[1]));
+//        LocalDateTime dateTime = LocalDateTime.now();
+//        dateTime.withHour(Integer.parseInt(times[0])).withMinute(Integer.parseInt(times[1]));
+//        log.info(dateTime.toString());
 
         return StampDto.Dummy.builder()
                 .kakaoId(getKakaoIdParams(params))
-                .dateTime(dateTime)
+                .dateTime(LocalDateTime.now()
+                        .withHour(Integer.parseInt(times[0]))
+                        .withMinute(Integer.parseInt(times[1])))
                 .stamp(action_params.get(PARAMS_EMOTION.getDescription()).toString())
                 .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
                 .build();
