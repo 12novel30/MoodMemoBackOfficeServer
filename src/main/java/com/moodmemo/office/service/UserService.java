@@ -64,11 +64,11 @@ public class UserService {
     public String getMyRanking(String kakaoId) {
 
         int myStampCount = 0;
-        String returnFormat = "1주차 랭킹 (" +
+        int weekNum = stampService.validateWeek();
+        String returnFormat = weekNum + "주차 랭킹 (" +
                 LocalDateTime.now().format(rankToBotFormat) +
                 " 기준)" + "\n==========\n";
 
-        int weekNum = stampService.validateWeek();
         List<UserDto.Rank> top1ForThisWeek =
                 stampService.getTop1ForThisWeek(weekNum);
 
