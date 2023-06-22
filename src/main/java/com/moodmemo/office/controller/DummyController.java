@@ -9,6 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
+
+import static com.moodmemo.office.code.EventCode.*;
+import static com.moodmemo.office.code.EventCode.WEEK4;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,5 +33,19 @@ public class DummyController {
     @PostMapping("/add-stamp")
     public StampDto.Response createStamp(@Valid @RequestBody StampDto.Dummy request) {
         return stampService.createStamp(request);
+    }
+
+    @GetMapping("/tmp")
+    public void tmp() {
+        LocalDate tmp1 = LocalDate.of(2023, 6, 23);
+        LocalDate tmp2 = LocalDate.of(2023, 6, 29);
+        LocalDate tmp3 = LocalDate.of(2023, 6, 25);
+        if (tmp1.isAfter(WEEK1.getStartDate()) && tmp1.isBefore(WEEK1.getEndDate()))
+            log.info("tmp1: {}", tmp1);
+        if (tmp2.isAfter(WEEK1.getStartDate()) && tmp2.isBefore(WEEK1.getEndDate()))
+            log.info("tmp2: {}", tmp2);
+        if (tmp3.isAfter(WEEK1.getStartDate()) && tmp3.isBefore(WEEK1.getEndDate()))
+            log.info("tmp3: {}", tmp3);
+
     }
 }
