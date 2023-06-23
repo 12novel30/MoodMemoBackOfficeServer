@@ -89,6 +89,8 @@ public class StampService {
                 List.of(WEEK4.getStartDate(), WEEK4.getEndDate()));
 
         LocalDate today = LocalDate.now();
+        log.info(today.toString());
+        log.info(WEEK1.getStartDate().toString());
         for (List<LocalDate> week : weeks) {
             if (validateIsInWeekRange(week, today)) {
                 int weekNum = weeks.indexOf(week) + 1;
@@ -100,10 +102,9 @@ public class StampService {
     }
 
     private static boolean validateIsInWeekRange(List<LocalDate> week, LocalDate today) {
-        return today.isAfter(week.get(0)) &&
-                today.isEqual(week.get(0)) &&
-                today.isBefore(week.get(1)) &&
-                today.isEqual(week.get(1));
+        return (today.isAfter(week.get(0)) && today.isBefore(week.get(1)))
+                || today.isEqual(week.get(0))
+                || today.isEqual(week.get(1));
     }
 
     public List<UserDto.Rank> getTop1ForThisWeek(int validateWeek) {

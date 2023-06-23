@@ -18,12 +18,12 @@ public interface UserRepository extends MongoRepository<Users, String> {
     List<Users> findTop1ByOrderByWeek4Desc();
 
     //    find week1 by kakaoId
-    int findWeek1ByKakaoId(String kakaoId);
+    Users findWeek1ByKakaoId(String kakaoId);
 
-    int findWeek2ByKakaoId(String kakaoId);
+    Users findWeek2ByKakaoId(String kakaoId);
 
-    int findWeek3ByKakaoId(String kakaoId);
+    Users findWeek3ByKakaoId(String kakaoId);
 
-    int findWeek4ByKakaoId(String kakaoId);
+    Users findWeek4ByKakaoId(String kakaoId);
 
 }

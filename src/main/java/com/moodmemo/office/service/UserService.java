@@ -95,16 +95,16 @@ public class UserService {
         int top1StampCount = 0;
         if (weekNum == 1) {
             top1StampCount = top1ForThisWeek.get(0).getWeek1();
-            myStampCount = userRepository.findWeek1ByKakaoId(kakaoId);
+            myStampCount = userRepository.findWeek1ByKakaoId(kakaoId).getWeek1();
         } else if (weekNum == 2) {
             top1StampCount = top1ForThisWeek.get(0).getWeek2();
-            myStampCount = userRepository.findWeek2ByKakaoId(kakaoId);
+            myStampCount = userRepository.findWeek2ByKakaoId(kakaoId).getWeek2();
         } else if (weekNum == 3) {
             top1StampCount = top1ForThisWeek.get(0).getWeek3();
-            myStampCount = userRepository.findWeek3ByKakaoId(kakaoId);
+            myStampCount = userRepository.findWeek3ByKakaoId(kakaoId).getWeek3();
         } else if (weekNum == 4) {
             top1StampCount = top1ForThisWeek.get(0).getWeek4();
-            myStampCount = userRepository.findWeek4ByKakaoId(kakaoId);
+            myStampCount = userRepository.findWeek4ByKakaoId(kakaoId).getWeek4();
         } else return "현재는 이벤트 기간이 아닙니다!";
 
         returnFormat +=
@@ -112,5 +112,11 @@ public class UserService {
                         "\n내 스탬프 개수 : " + myStampCount + "개" +
                         "\n\n더 많은 스탬프를 남겨 1등을 탈환하길 바라요!🥰";
         return returnFormat;
+    }
+
+    public boolean validateUserAlreadyExist(String kakaoId) {
+        if (userRepository.findByKakaoId(kakaoId) != null)
+            return true; // 이미 있다
+        return false; // 없다
     }
 }

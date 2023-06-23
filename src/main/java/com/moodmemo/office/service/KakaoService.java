@@ -39,13 +39,20 @@ public class KakaoService {
 
         return resultJson;
     }
+    public static HashMap<String, Object> getValidatetHashMap(String showText) {
+        HashMap<String, Object> resultJson = new HashMap<>();
+        resultJson.put("status", showText);
+        return resultJson;
+    }
 
-    public StampDto.Dummy getStampParams(Map<String, Object> params) {
+    public StampDto.Dummy getStampParams(Map<String, Object> params) throws JsonProcessingException {
         Map<String, Object> action_params = getParamsFromAction(params);
+        String stamp = getParamFromDetailParams(params, PARAMS_EMOTION.getDescription());
+        stamp = stamp.substring(1, stamp.length() - 1);
         return StampDto.Dummy.builder()
                 .kakaoId(getKakaoIdParams(params))
                 .dateTime(LocalDateTime.now())
-                .stamp(action_params.get(PARAMS_EMOTION.getDescription()).toString())
+                .stamp(stamp)
                 .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
                 .build();
     }
@@ -56,15 +63,20 @@ public class KakaoService {
         // get timeStamp from params
         // TODO - mapper 삭제하고 age 파트 더 깔끔히 작성
         ObjectMapper mapper = new ObjectMapper();
-        String time =
-                mapper.writeValueAsString(
-                        mapper.convertValue(
-                                mapper.convertValue(
-                                        mapper.convertValue(params.get("action"), Map.class)
-                                                .get("detailParams"), Map.class)
-                                        .get(PARAMS_TIME.getDescription()), Map.class)
-                                .get("origin")); // time = ""13:14""
+        String time = getParamFromDetailParams(params, PARAMS_TIME.getDescription());
+
+//                mapper.writeValueAsString(
+//                        mapper.convertValue(
+//                                        mapper.convertValue(
+//                                                        mapper.convertValue(params.get("action"), Map.class)
+//                                                                .get("detailParams"), Map.class)
+//                                                .get(PARAMS_TIME.getDescription()), Map.class)
+//                                .get("origin"));
+                // time = ""13:14""
         String[] times = time.substring(1, time.length() - 1).split(":");
+
+        String stamp = getParamFromDetailParams(params, PARAMS_EMOTION.getDescription());
+        stamp = stamp.substring(1, stamp.length() - 1);
 
         // set timeStamp (edit ver)
 //        LocalDateTime dateTime = LocalDateTime.now();
@@ -76,7 +88,8 @@ public class KakaoService {
                 .dateTime(LocalDateTime.now()
                         .withHour(Integer.parseInt(times[0]))
                         .withMinute(Integer.parseInt(times[1])))
-                .stamp(action_params.get(PARAMS_EMOTION.getDescription()).toString())
+//                .stamp(action_params.get(PARAMS_EMOTION.getDescription()).toString())
+                .stamp(stamp)
                 .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
                 .build();
     }
@@ -89,19 +102,25 @@ public class KakaoService {
 
         return UserDto.Dummy.builder()
                 .kakaoId(getKakaoIdParams(params))
-                .username("test bot")
+                .username(action_params.get("name").toString())
                 .age(convertAge(
-                        mapper.writeValueAsString(
-                                mapper.convertValue(
-                                                mapper.convertValue(
-                                                                mapper.convertValue(params.get("action"), Map.class)
-                                                                        .get("detailParams"), Map.class)
-                                                        .get("age"), Map.class)
-                                        .get("origin"))))
+                        getParamFromDetailParams(params, "age")))
                 .gender(convertGender(
                         action_params.get(PARAMS_GENDER.getDescription()).toString()))
                 .job(action_params.get(PARAMS_JOB.getDescription()).toString())
                 .build();
+    }
+
+    private static String getParamFromDetailParams(
+            Map<String, Object> params, String entity) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(
+                mapper.convertValue(
+                                mapper.convertValue(
+                                                mapper.convertValue(params.get("action"), Map.class)
+                                                        .get("detailParams"), Map.class)
+                                        .get(entity), Map.class)
+                        .get("origin"));
     }
 
     private static Map getParamsFromAction(Map<String, Object> params) {
@@ -134,7 +153,7 @@ public class KakaoService {
                 .toString();
     }
 
-    private static String getParameterToString(Object params) throws JsonProcessingException {
+    public static String getParameterToString(Object params) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         String userRequest = mapper.writeValueAsString(params);
         return userRequest;
@@ -154,5 +173,13 @@ public class KakaoService {
         return "오늘 남긴 스탬프리스트입니다!" +
                 "\n" + "=========="
                 + "\n" + stampListText;
+    }
+
+    public String validateMemoletLength(String memolet) {
+        if (memolet.length() < 10) {
+            return "FAIL";
+        } else {
+            return "SUCCESS";
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.moodmemo.office.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.service.KakaoService;
 import com.moodmemo.office.service.StampService;
 import com.moodmemo.office.service.UserService;
@@ -28,22 +29,41 @@ public class SkillController {
     private final StampService stampService;
     private final UserService userService;
 
+    // TODO - 다른 모든 메소드 에러처리
 
     @PostMapping("/userInfo")
-    public HashMap<String, Object> callUserInfoAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
-        userService.createUser(kakaoService.getInfoParams(params));
-        // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
-        // TODO - 이미 저장된 정보면 그거에 관련한 에러처리 보내기
-        return kakaoService.getStringObjectHashMap("userInfo 발화리턴");
-        // TODO - 다른 모든 메소드 에러처리
+    public HashMap<String, Object> callUserInfoAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        log.info(kakaoService.getParameterToString(params));
+
+        String returnText = "";
+        UserDto.Dummy userDto = kakaoService.getInfoParams(params);
+
+        if (userService.validateUserAlreadyExist(userDto.getKakaoId())) { // return true
+            log.info(userDto.getKakaoId());
+            returnText = "이미 등록한 정보가 있습니다!" +
+                    "\n수정을 원하신다면, [문의] 키워드를 통해 운영진에게 문의해주세요!";
+        } else { // return false
+            userService.createUser(userDto);
+            returnText = "정보가 입력되었습니다!";
+        }
+
+        return kakaoService.getStringObjectHashMap(returnText);
     }
 
     @PostMapping("/stamp")
-    public HashMap<String, Object> callStampAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
+    public HashMap<String, Object> callStampAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        log.info(kakaoService.getParameterToString(params));
+
         // save stamp
         String kakaoId =
-                stampService.createStamp(
-                        kakaoService.getStampParams(params)).getKakaoId();
+                stampService.createStamp(kakaoService.getStampParams(params))
+                        .getKakaoId();
         // update week n 의 스탬프 개수
         userService.updateWeekCount(kakaoId, stampService.validateWeek());
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
@@ -51,29 +71,52 @@ public class SkillController {
     }
 
     @PostMapping("/timeChange-stamp")
-    public HashMap<String, Object> callTimeChangedStampAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
+    public HashMap<String, Object> callTimeChangedStampAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        log.info(kakaoService.getParameterToString(params));
+
         // save stamp
         String kakaoId =
-                stampService.createStamp(
-                        kakaoService.getTimeChangedStampParams(params)).getKakaoId();
+                stampService.createStamp(kakaoService.getTimeChangedStampParams(params))
+                        .getKakaoId();
         // update week n 의 스탬프 개수
         userService.updateWeekCount(kakaoId, stampService.validateWeek());
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
         return kakaoService.getStringObjectHashMap("시간 변경 버전 memolet 발화리턴");
     }
 
-    // TODO - 기타 스탬프 처리하는 방법 생각해보기
-    @PostMapping("/stampList") // TODO - checking
+    @PostMapping("/validate/memolet")
+    public HashMap<String, Object> validateMemoletAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        log.info(kakaoService.getParameterToString(params));
+
+        HashMap<String, Object> tmp =
+                kakaoService.getValidatetHashMap(
+                        kakaoService.validateMemoletLength(
+                                params.get("utterance").toString()));
+        return tmp;
+    }
+
+    @PostMapping("/stampList")
     public HashMap<String, Object> callStampListAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
-        // TODO - 시간순으로 정렬하기 (최신순)
+        log.info(kakaoService.getParameterToString(params));
         return kakaoService.getStringObjectHashMap(
                 kakaoService.getTextFormatForStampList(
                         stampService.getStampList(
                                 kakaoService.getKakaoIdParams(params))));
     }
 
-    @PostMapping("/userRank") // TODO
-    public HashMap<String, Object> callUserRankAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
+    @PostMapping("/userRank")
+    public HashMap<String, Object> callUserRankAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        log.info(kakaoService.getParameterToString(params));
+
         return kakaoService.getStringObjectHashMap(
                 userService.getMyRanking(
                         kakaoService.getKakaoIdParams(params)));
@@ -152,20 +195,10 @@ public class SkillController {
 //        System.out.println(kakaoid2);
 //        System.out.println();
 
-        String tmp = mapper.writeValueAsString(
-                mapper.convertValue(
-                                mapper.convertValue(params.get("action"), Map.class)
-                                        .get("detailParams"), Map.class)
-                        .get("age"));
+        String tmp = mapper.writeValueAsString(mapper.convertValue(mapper.convertValue(params.get("action"), Map.class).get("detailParams"), Map.class).get("age"));
         System.out.println(tmp);
 
-        String tmp2 = mapper.writeValueAsString(
-                mapper.convertValue(
-                                mapper.convertValue(
-                                                mapper.convertValue(params.get("action"), Map.class)
-                                                        .get("detailParams"), Map.class)
-                                        .get("age"), Map.class)
-                        .get("origin"));
+        String tmp2 = mapper.writeValueAsString(mapper.convertValue(mapper.convertValue(mapper.convertValue(params.get("action"), Map.class).get("detailParams"), Map.class).get("age"), Map.class).get("origin"));
         System.out.println(tmp2);
 
     }
