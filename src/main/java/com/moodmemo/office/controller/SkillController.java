@@ -106,7 +106,7 @@ public class SkillController {
         log.info(kakaoService.getParameterToString(params));
         return kakaoService.getStringObjectHashMap(
                 kakaoService.getTextFormatForStampList(
-                        stampService.getStampList(
+                        stampService.getStampListByDate(
                                 kakaoService.getKakaoIdParams(params))));
     }
 

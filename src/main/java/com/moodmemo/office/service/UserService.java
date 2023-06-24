@@ -2,20 +2,28 @@ package com.moodmemo.office.service;
 
 import com.moodmemo.office.domain.Users;
 import com.moodmemo.office.dto.UserDto;
+import com.moodmemo.office.repository.StampRepository;
 import com.moodmemo.office.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.moodmemo.office.code.OfficeCode.ENDDATE_TAIL;
+import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
+    private final StampRepository stampRepository;
 
     private final UserRepository userRepository;
     private final StampService stampService;
@@ -118,5 +126,32 @@ public class UserService {
         if (userRepository.findByKakaoId(kakaoId) != null)
             return true; // 이미 있다
         return false; // 없다
+    }
+
+    public HashMap<String, Object> getUserStampCountYesterday() {
+        List<UserDto.StampCount> stampCountList = userRepository.findAll()
+                .stream()
+                .map(UserDto.StampCount::fromDocuments)
+                .collect(Collectors.toList());
+
+        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        for (UserDto.StampCount stampCount : stampCountList) {
+            stampCount.setStampCount(
+                    stampRepository.countByKakaoIdAndDateTimeBetween(
+                            stampCount.getKakaoId(),
+                            Timestamp.valueOf(
+                                    yesterday.minusDays(1)
+                                            + STARTDATE_TAIL.getDescription()),
+                            Timestamp.valueOf(
+                                    yesterday.plusDays(1)
+                                            + ENDDATE_TAIL.getDescription())));
+        }
+
+        HashMap<String, Object> resultJson = new HashMap<>();
+        resultJson.put("info", yesterday + "의 스탬프 개수");
+        resultJson.put("data", stampCountList);
+
+        return resultJson;
     }
 }

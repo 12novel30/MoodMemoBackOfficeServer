@@ -1,10 +1,7 @@
 package com.moodmemo.office.dto;
 
 import com.moodmemo.office.domain.Users;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 public class UserDto {
 
@@ -18,6 +15,22 @@ public class UserDto {
         private int age;
         private boolean gender;
         private String job;
+    }
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class StampCount {
+        private String kakaoId;
+        private String username;
+        @Setter
+        private int stampCount;
+        public static StampCount fromDocuments(Users user) {
+            return StampCount.builder()
+                    .kakaoId(user.getKakaoId())
+                    .username(user.getUsername())
+                    .build();
+        }
     }
 
     @Getter

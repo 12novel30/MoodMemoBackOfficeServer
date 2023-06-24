@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -33,6 +34,11 @@ public class UserController {
         // Todo - AI Api 에서 받은 결과를 FE에 전달.
         return stampService.createDailyReport(kakaoId);
         // Todo - 나중에는 날짜 변경할 수 있는 메소드 만들자
+    }
+
+    @GetMapping("/userStampCount")
+    public HashMap<String, Object> getUserStampCountYesterday() {
+        return userService.getUserStampCountYesterday();
     }
 
 }

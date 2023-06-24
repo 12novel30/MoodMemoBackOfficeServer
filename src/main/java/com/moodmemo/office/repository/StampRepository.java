@@ -16,4 +16,6 @@ public interface StampRepository extends MongoRepository<Stamps, String> {
     List<Stamps> findByKakaoIdAndDateTimeBetweenOrderByDateTime(String kakaoId,
                                                                 Date startDateTime,
                                                                 Date endDateTime);
+
+    int countByKakaoIdAndDateTimeBetween(String kakaoId, Date startDateTime, Date endDateTime);
 }

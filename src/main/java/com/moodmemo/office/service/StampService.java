@@ -60,17 +60,17 @@ public class StampService {
         return DailyReportDto.Request.builder()
                 .userDto(UserDto.SendAI.fromDocuments(
                         userRepository.findByKakaoId(kakaoId)))
-                .todayStampList(getStampList(kakaoId, yesterday))
+                .todayStampList(getStampListByDate(kakaoId, yesterday))
                 .build();
     }
 
-    public List<Stamps> getStampList(String kakaoId) {
+    public List<Stamps> getStampListByDate(String kakaoId) {
         // 오늘의 스탬프리스트를 요청.
         LocalDate today = LocalDate.now();
-        return getStampList(kakaoId, today);
+        return getStampListByDate(kakaoId, today);
     }
 
-    private List<Stamps> getStampList(String kakaoId, LocalDate date) {
+    private List<Stamps> getStampListByDate(String kakaoId, LocalDate date) {
         return stampRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
                 kakaoId,
                 Timestamp.valueOf(
