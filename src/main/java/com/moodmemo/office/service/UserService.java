@@ -1,6 +1,5 @@
 package com.moodmemo.office.service;
 
-import com.moodmemo.office.domain.Stamps;
 import com.moodmemo.office.domain.Users;
 import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
@@ -139,7 +138,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public HashMap<String, Object> getUserStampCount(LocalDate date) {
-        List<UserDto.StampCount> stampCountList = userRepository.findAll()
+        List<UserDto.StampCount> stampCountList = userRepository.findAllByOrderByUsername()
                 .stream()
                 .map(UserDto.StampCount::fromDocuments)
                 .collect(Collectors.toList());

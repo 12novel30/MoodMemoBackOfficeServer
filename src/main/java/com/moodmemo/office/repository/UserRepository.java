@@ -3,11 +3,12 @@ package com.moodmemo.office.repository;
 import com.moodmemo.office.domain.Users;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends MongoRepository<Users, String> {
+
+    List<Users> findAllByOrderByUsername();
     Optional<Users> findByKakaoId(String kakaoId);
     // please count method by kakaoid and between dateTime
 
