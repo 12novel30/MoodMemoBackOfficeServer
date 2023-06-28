@@ -16,7 +16,7 @@ import java.net.URI;
 public class AIService {
 
     public DailyReportDto.Response sendDailyReport(DailyReportDto.Request toAI) {
-        // http://localhost:9090/api/server/user/{userId}/name/{username}
+        // http://localhost:9090/api/server/user/{userId}/name/{username} 가 예시였다.
 
         // http://3.39.118.25:5000/journal
         URI uri = UriComponentsBuilder
@@ -25,17 +25,16 @@ public class AIService {
                 .encode()
                 .build()
                 // pathVariable 사용을 위한 메소드 순서대로 들어간다.
-//                .expand("100","ugo")
+                // .expand("100","ugo")
                 .toUri();
         log.info(uri.toString());
 
         // 아래 순서로 변환
         // http body - object - object mapper -> json - > http body json
-
         // toAI = request
-//        UserRequest req = new UserRequest();
-//        req.setName("ugo");
-//        req.setAge(20);
+        // UserRequest req = new UserRequest();
+        // req.setName("ugo");
+        // req.setAge(20);
         RestTemplate restTemplate = new RestTemplate();
 
         // post 의 경우 PostForEntity 를 사용한다.

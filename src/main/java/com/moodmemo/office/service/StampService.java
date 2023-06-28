@@ -53,10 +53,8 @@ public class StampService {
     }
 
     private DailyReportDto.Request getDailyReportRequestDto(String kakaoId) {
-
         // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
         LocalDate yesterday = LocalDate.now().minusDays(1);
-
         return DailyReportDto.Request.builder()
                 .userDto(UserDto.SendAI.fromDocuments(
                         userRepository.findByKakaoId(kakaoId)))

@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.List;
 
-import static com.moodmemo.office.code.EventCode.*;
-import static com.moodmemo.office.code.EventCode.WEEK4;
+import static com.moodmemo.office.code.EventCode.WEEK1;
 
 @RestController
 @RequiredArgsConstructor

@@ -17,5 +17,7 @@ public class DailyReport {
     private String kakaoId;
     private LocalDate date;
     private String title, bodyText;
-    private List<String> keyword;
+    private String keyword1st;
+    private String keyword2nd;
+    private String keyword3rd;
 }

@@ -7,7 +7,7 @@ import com.moodmemo.office.service.StampService;
 import com.moodmemo.office.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class BackOfficeController {
     private final StampService stampService;
     private final DailyReportService dailyReportService;
 
-    @GetMapping("/home")
+    @GetMapping("/home") // 사용 안 할 예정
     public List<UserDto.Response> getUserList() {
         return userService.getAllUsers();
     }
@@ -40,7 +40,7 @@ public class BackOfficeController {
     }
 
     @PostMapping(value = "/dailyReport", produces = "application/json;charset=UTF-8")
-    public ResponseEntity upsertDailyReport(@RequestBody DailyReportDto.Response dr) {
+    public HttpStatus upsertDailyReport(@RequestBody DailyReportDto.Response dr) {
          return dailyReportService.upsertDailyReport(dr);
     }
 

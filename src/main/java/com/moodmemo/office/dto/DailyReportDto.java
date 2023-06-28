@@ -30,7 +30,9 @@ public class DailyReportDto {
         private String username;
         private LocalDate date;
         private String title, bodyText;
-        private List<String> keyword;
+        private String keyword1st;
+        private String keyword2nd;
+        private String keyword3rd;
         private String time;
     }
 }
