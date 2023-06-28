@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,6 +120,20 @@ public class SkillController {
         return kakaoService.getStringObjectHashMap(
                 userService.getMyRanking(
                         kakaoService.getKakaoIdParams(params)));
+    }
+
+    @PostMapping("/dailyReport/yesterday")
+    public HashMap<String, Object> callDRAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        log.info(kakaoService.getParameterToString(params));
+
+        // 자정이 넘은 뒤, 어제의 DR 을 가져오는 것으로 생각함.
+        return kakaoService.getStringObjectHashMap(
+                userService.getUserDRYesterday(
+                        kakaoService.getKakaoIdParams(params),
+                        LocalDate.now().minusDays(1)));
     }
 
 
