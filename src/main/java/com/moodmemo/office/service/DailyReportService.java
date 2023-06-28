@@ -25,33 +25,27 @@ public class DailyReportService {
     public HttpStatus upsertDailyReport(DailyReportDto.Response dr) {
         DailyReport dailyReport = null;
 
-        if (!dailyReportRepository.findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate())
+        if (!dailyReportRepository.findByKakaoIdAndDate(
+                dr.getKakaoId(), dr.getDate())
                 .isEmpty()) {
-            if (dr.getKakaoId() != null)
-                dailyReport.setKakaoId(dr.getKakaoId());
-            if (dr.getDate() != null)
-                dailyReport.setDate(dr.getDate().atStartOfDay());
-            if (dr.getTitle() != null)
-                dailyReport.setTitle(dr.getTitle());
-            if (dr.getBodyText() != null)
-                dailyReport.setBodyText(dr.getBodyText());
-            if (dr.getKeyword1st() != null)
-                dailyReport.setKeyword1st(dr.getKeyword1st());
-            if (dr.getKeyword2nd() != null)
-                dailyReport.setKeyword2nd(dr.getKeyword2nd());
-            if (dr.getKeyword3rd() != null)
-                dailyReport.setKeyword3rd(dr.getKeyword3rd());
-        } else {
-            dailyReport = DailyReport.builder()
-                    .kakaoId(dr.getKakaoId())
-                    .date(dr.getDate().atStartOfDay())
-                    .title(dr.getTitle())
-                    .keyword1st(dr.getKeyword1st())
-                    .keyword2nd(dr.getKeyword2nd())
-                    .keyword3rd(dr.getKeyword3rd())
-                    .bodyText(dr.getBodyText())
-                    .build();
+            dailyReport = dailyReportRepository.findByKakaoIdAndDate(
+                    dr.getKakaoId(), dr.getDate()).get();
         }
+
+        if (dr.getKakaoId() != null)
+            dailyReport.setKakaoId(dr.getKakaoId());
+        if (dr.getDate() != null)
+            dailyReport.setDate(dr.getDate().atStartOfDay());
+        if (dr.getTitle() != null)
+            dailyReport.setTitle(dr.getTitle());
+        if (dr.getBodyText() != null)
+            dailyReport.setBodyText(dr.getBodyText());
+        if (dr.getKeyword1st() != null)
+            dailyReport.setKeyword1st(dr.getKeyword1st());
+        if (dr.getKeyword2nd() != null)
+            dailyReport.setKeyword2nd(dr.getKeyword2nd());
+        if (dr.getKeyword3rd() != null)
+            dailyReport.setKeyword3rd(dr.getKeyword3rd());
 
         return ResponseEntity.ok(dailyReportRepository.save(dailyReport))
                 .getStatusCode();
