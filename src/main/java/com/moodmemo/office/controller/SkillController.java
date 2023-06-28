@@ -29,7 +29,6 @@ public class SkillController {
     private final StampService stampService;
     private final UserService userService;
 
-    // TODO - 다른 모든 메소드 에러처리
 
     @PostMapping("/userInfo")
     public HashMap<String, Object> callUserInfoAPI(
@@ -38,7 +37,7 @@ public class SkillController {
 
         log.info(kakaoService.getParameterToString(params));
 
-        String returnText = "";
+        String returnText;
         UserDto.Dummy userDto = kakaoService.getInfoParams(params);
 
         if (userService.validateUserAlreadyExist(userDto.getKakaoId())) { // return true

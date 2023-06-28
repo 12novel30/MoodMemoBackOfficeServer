@@ -1,7 +1,9 @@
 package com.moodmemo.office.service;
 
+import com.moodmemo.office.code.OfficeErrorCode;
 import com.moodmemo.office.domain.Users;
 import com.moodmemo.office.dto.UserDto;
+import com.moodmemo.office.exception.OfficeException;
 import com.moodmemo.office.repository.StampRepository;
 import com.moodmemo.office.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.moodmemo.office.code.OfficeCode.ENDDATE_TAIL;
 import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
+import static com.moodmemo.office.code.OfficeErrorCode.NO_USER;
 
 @Service
 @Slf4j
@@ -53,20 +56,22 @@ public class UserService {
     }
 
     public void updateWeekCount(String kakaoId, int weekNum) {
-        // TODO - 에러처리하기
-        if (userRepository.findByKakaoId(kakaoId) != null) {
-            Users user = userRepository.findByKakaoId(kakaoId);
-            if (weekNum == 1)
-                user.setWeek1(user.getWeek1() + 1);
-            else if (weekNum == 2)
-                user.setWeek2(user.getWeek2() + 1);
-            else if (weekNum == 3)
-                user.setWeek3(user.getWeek3() + 1);
-            else if (weekNum == 4)
-                user.setWeek4(user.getWeek4() + 1);
+        Users user = getUser(kakaoId);
+        if (weekNum == 1)
+            user.setWeek1(user.getWeek1() + 1);
+        else if (weekNum == 2)
+            user.setWeek2(user.getWeek2() + 1);
+        else if (weekNum == 3)
+            user.setWeek3(user.getWeek3() + 1);
+        else if (weekNum == 4)
+            user.setWeek4(user.getWeek4() + 1);
 
-            userRepository.save(user);
-        }
+        userRepository.save(user);
+    }
+
+    private Users getUser(String kakaoId) {
+        return userRepository.findByKakaoId(kakaoId)
+                .orElseThrow(() -> new OfficeException(NO_USER));
     }
 
     private final DateTimeFormatter rankToBotFormat =
@@ -106,16 +111,16 @@ public class UserService {
         int top1StampCount = 0;
         if (weekNum == 1) {
             top1StampCount = top1ForThisWeek.get(0).getWeek1();
-            myStampCount = userRepository.findWeek1ByKakaoId(kakaoId).getWeek1();
+            myStampCount = getUser(kakaoId).getWeek1();
         } else if (weekNum == 2) {
             top1StampCount = top1ForThisWeek.get(0).getWeek2();
-            myStampCount = userRepository.findWeek2ByKakaoId(kakaoId).getWeek2();
+            myStampCount = getUser(kakaoId).getWeek2();
         } else if (weekNum == 3) {
             top1StampCount = top1ForThisWeek.get(0).getWeek3();
-            myStampCount = userRepository.findWeek3ByKakaoId(kakaoId).getWeek3();
+            myStampCount = getUser(kakaoId).getWeek3();
         } else if (weekNum == 4) {
             top1StampCount = top1ForThisWeek.get(0).getWeek4();
-            myStampCount = userRepository.findWeek4ByKakaoId(kakaoId).getWeek4();
+            myStampCount = getUser(kakaoId).getWeek4();
         } else return "현재는 이벤트 기간이 아닙니다!";
 
         returnFormat +=
