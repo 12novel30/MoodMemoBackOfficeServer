@@ -53,6 +53,16 @@ public class BackOfficeController {
                 LocalDate.now().minusDays(1));
     }
 
+    @GetMapping(value = "/dailyReport/{id}/{date}",
+            produces = "application/json;charset=UTF-8") // TODO - 로그 찍어야 함
+    public DailyReportDto.Response getDailyReportToUser(
+            @PathVariable(value = "date") final String date,
+            @PathVariable(value = "id") final String id) {
+        return dailyReportService.getDailyReportDBVersion(
+                id,
+                LocalDate.now().minusDays(1));
+    }
+
     @GetMapping("/userStampCount")
     public HashMap<String, Object> getUserStampCount() {
         // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
@@ -64,6 +74,11 @@ public class BackOfficeController {
             produces = "application/json;charset=UTF-8")
     // 사용자가 업데이트 할 때에도 같은 메소드 사용
     public HttpStatus upsertDailyReport(@RequestBody DailyReportDto.Response dr) {
+        return dailyReportService.upsertDailyReport(dr);
+    }
+    @PostMapping(value = "/dailyReport/{id}/{date}",
+            produces = "application/json;charset=UTF-8") // TODO - 로그 찍어야 함
+    public HttpStatus upsertDailyReportByUser(@RequestBody DailyReportDto.Response dr) {
         return dailyReportService.upsertDailyReport(dr);
     }
 
