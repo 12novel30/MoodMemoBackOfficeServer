@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,26 +32,38 @@ public class BackOfficeController {
         return userService.getAllUsers();
     }
 
-    @GetMapping(value = "/dailyReport/{kakaoId}", produces = "application/json;charset=UTF-8")
-    public DailyReportDto.Response getYesterDayDailyReport(@PathVariable final String kakaoId) {
-        // Todo - 오늘 날짜 & 카카오 Id로 stamp list 를 조회 -> AI APi에 전달.
-        // Todo - AI Api 에서 받은 결과를 FE에 전달.
-        return stampService.createYesterDayDailyReport(kakaoId);
+    @GetMapping(value = "/dailyReport/{kakaoId}",
+            produces = "application/json;charset=UTF-8")
+    public DailyReportDto.Response getDailyReport(
+            @PathVariable final String kakaoId) {
+        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
         // Todo - 나중에는 날짜 변경할 수 있는 메소드 만들자
-    }
-    @GetMapping(value = "/dailyReport/final/{kakaoId}", produces = "application/json;charset=UTF-8")
-    public DailyReportDto.Response getYesterDayDailyReportDBVersion(@PathVariable final String kakaoId) {
-        return dailyReportService.getYesterDayDailyReportDBVersion(kakaoId);
+        return stampService.createDailyReport(
+                kakaoId,
+                LocalDate.now().minusDays(1));
     }
 
-    @PostMapping(value = "/dailyReport", produces = "application/json;charset=UTF-8")
-    public HttpStatus upsertDailyReport(@RequestBody DailyReportDto.Response dr) {
-         return dailyReportService.upsertDailyReport(dr);
+    @GetMapping(value = "/dailyReport/final/{kakaoId}",
+            produces = "application/json;charset=UTF-8")
+    public DailyReportDto.Response getDailyReportDBVersion(
+            @PathVariable final String kakaoId) {
+        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
+        return dailyReportService.getDailyReportDBVersion(
+                kakaoId,
+                LocalDate.now().minusDays(1));
     }
 
     @GetMapping("/userStampCount")
-    public HashMap<String, Object> getUserStampCountYesterday() {
-        return userService.getUserStampCountYesterday();
+    public HashMap<String, Object> getUserStampCount() {
+        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
+        return userService.getUserStampCount(
+                LocalDate.now().minusDays(1));
+    }
+
+    @PostMapping(value = "/dailyReport",
+            produces = "application/json;charset=UTF-8")
+    public HttpStatus upsertDailyReport(@RequestBody DailyReportDto.Response dr) {
+        return dailyReportService.upsertDailyReport(dr);
     }
 
 }

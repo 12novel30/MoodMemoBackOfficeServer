@@ -5,9 +5,10 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends MongoRepository<Users, String> {
-    Users findByKakaoId(String kakaoId);
+    Optional<Users> findByKakaoId(String kakaoId);
     // please count method by kakaoid and between dateTime
 
     // please find method sorted by week1 limit 1
@@ -20,12 +21,12 @@ public interface UserRepository extends MongoRepository<Users, String> {
     List<Users> findTop1ByOrderByWeek4Desc();
 
     //    find week1 by kakaoId
-    Users findWeek1ByKakaoId(String kakaoId);
+    Optional<Users> findWeek1ByKakaoId(String kakaoId);
 
-    Users findWeek2ByKakaoId(String kakaoId);
+    Optional<Users> findWeek2ByKakaoId(String kakaoId);
 
-    Users findWeek3ByKakaoId(String kakaoId);
+    Optional<Users> findWeek3ByKakaoId(String kakaoId);
 
-    Users findWeek4ByKakaoId(String kakaoId);
+    Optional<Users> findWeek4ByKakaoId(String kakaoId);
 
 }

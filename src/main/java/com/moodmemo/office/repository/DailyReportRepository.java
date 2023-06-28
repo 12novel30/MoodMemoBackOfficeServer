@@ -1,14 +1,20 @@
 package com.moodmemo.office.repository;
 
 import com.moodmemo.office.domain.DailyReport;
-import com.moodmemo.office.domain.Stamps;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.sql.Timestamp;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Optional;
 
 public interface DailyReportRepository extends MongoRepository<DailyReport, String> {
-    DailyReport findByKakaoId(String kakaoId);
 
-    DailyReport findByKakaoIdAndDateTimeBetweenOrderByDateTime(String kakaoId, Timestamp startDateTime, Timestamp endDateTime);
+    Optional<DailyReport> findByKakaoIdAndDateTimeBetweenOrderByDateTime(
+            String kakaoId,
+            Timestamp startDateTime,
+            Timestamp endDateTime);
+
+    Optional<DailyReport> findByKakaoId(String kakaoId);
+
+    Optional<DailyReport> findByKakaoIdAndDate(String kakaoId, LocalDate date);
 }

@@ -2,18 +2,18 @@ package com.moodmemo.office.service;
 
 import com.moodmemo.office.domain.DailyReport;
 import com.moodmemo.office.dto.DailyReportDto;
+import com.moodmemo.office.exception.OfficeException;
 import com.moodmemo.office.repository.DailyReportRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
-import static com.moodmemo.office.code.OfficeCode.ENDDATE_TAIL;
-import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
+import static com.moodmemo.office.code.OfficeErrorCode.NO_DR;
 
 @Service
 @Slf4j
@@ -21,17 +21,16 @@ import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
 public class DailyReportService {
     private final DailyReportRepository dailyReportRepository;
 
+    @Transactional
     public HttpStatus upsertDailyReport(DailyReportDto.Response dr) {
-        DailyReport dailyReport;
+        DailyReport dailyReport = null;
 
-        String kakaoId = dr.getKakaoId();
-        if (dailyReportRepository.findByKakaoId(kakaoId) != null) {
-            dailyReport = dailyReportRepository.findByKakaoId(kakaoId);
-
+        if (!dailyReportRepository.findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate())
+                .isEmpty()) {
             if (dr.getKakaoId() != null)
                 dailyReport.setKakaoId(dr.getKakaoId());
             if (dr.getDate() != null)
-                dailyReport.setDate(dr.getDate());
+                dailyReport.setDate(dr.getDate().atStartOfDay());
             if (dr.getTitle() != null)
                 dailyReport.setTitle(dr.getTitle());
             if (dr.getBodyText() != null)
@@ -45,7 +44,7 @@ public class DailyReportService {
         } else {
             dailyReport = DailyReport.builder()
                     .kakaoId(dr.getKakaoId())
-                    .date(dr.getDate())
+                    .date(dr.getDate().atStartOfDay())
                     .title(dr.getTitle())
                     .keyword1st(dr.getKeyword1st())
                     .keyword2nd(dr.getKeyword2nd())
@@ -53,21 +52,16 @@ public class DailyReportService {
                     .bodyText(dr.getBodyText())
                     .build();
         }
-        return ResponseEntity.ok(dailyReportRepository.save(dailyReport)).getStatusCode();
+
+        return ResponseEntity.ok(dailyReportRepository.save(dailyReport))
+                .getStatusCode();
     }
 
-    public DailyReportDto.Response getYesterDayDailyReportDBVersion(String kakaoId) {
-
-        LocalDate yesterday = LocalDate.now().minusDays(1);
+    @Transactional(readOnly = true)
+    public DailyReportDto.Response getDailyReportDBVersion(
+            String kakaoId, LocalDate date) {
         return DailyReportDto.Response.fromDocument(
-                dailyReportRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
-                        kakaoId,
-                        Timestamp.valueOf(
-                                yesterday.minusDays(1)
-                                        + STARTDATE_TAIL.getDescription()),
-                        Timestamp.valueOf(
-                                yesterday.plusDays(1)
-                                        + ENDDATE_TAIL.getDescription())));
-
+                dailyReportRepository.findByKakaoIdAndDate(kakaoId, date)
+                        .orElseThrow(() -> new OfficeException(NO_DR)));
     }
 }

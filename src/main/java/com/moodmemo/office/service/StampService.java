@@ -5,11 +5,13 @@ import com.moodmemo.office.domain.Users;
 import com.moodmemo.office.dto.DailyReportDto;
 import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
+import com.moodmemo.office.exception.OfficeException;
 import com.moodmemo.office.repository.StampRepository;
 import com.moodmemo.office.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 import static com.moodmemo.office.code.EventCode.*;
 import static com.moodmemo.office.code.OfficeCode.ENDDATE_TAIL;
 import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
+import static com.moodmemo.office.code.OfficeErrorCode.NO_USER;
 
 @Service
 @Slf4j
@@ -48,17 +51,20 @@ public class StampService {
 
     }
 
-    public DailyReportDto.Response createYesterDayDailyReport(String kakaoId) {
-        return aiService.sendDailyReport(getDailyReportRequestDto(kakaoId));
+    public DailyReportDto.Response createDailyReport(
+            String kakaoId, LocalDate date) {
+        return aiService.sendDailyReport(
+                getDailyReportRequestDto(kakaoId, date));
     }
 
-    private DailyReportDto.Request getDailyReportRequestDto(String kakaoId) {
-        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
-        LocalDate yesterday = LocalDate.now().minusDays(1);
+    @Transactional(readOnly = true)
+    private DailyReportDto.Request getDailyReportRequestDto(
+            String kakaoId, LocalDate date) {
         return DailyReportDto.Request.builder()
                 .userDto(UserDto.SendAI.fromDocuments(
-                        userRepository.findByKakaoId(kakaoId)))
-                .todayStampList(getStampListByDate(kakaoId, yesterday))
+                        userRepository.findByKakaoId(kakaoId)
+                                .orElseThrow(() -> new OfficeException(NO_USER))))
+                .todayStampList(getStampListByDate(kakaoId, date))
                 .build();
     }
 
