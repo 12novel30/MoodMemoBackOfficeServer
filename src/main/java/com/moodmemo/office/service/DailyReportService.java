@@ -23,11 +23,11 @@ public class DailyReportService {
 
     @Transactional
     public HttpStatus upsertDailyReport(DailyReportDto.Response dr) {
-        DailyReport dailyReport = null;
+        DailyReport dailyReport = DailyReport.builder().build();
 
-        if (!dailyReportRepository.findByKakaoIdAndDate(
+        if (dailyReportRepository.findByKakaoIdAndDate(
                 dr.getKakaoId(), dr.getDate())
-                .isEmpty()) {
+                .isPresent()) {
             dailyReport = dailyReportRepository.findByKakaoIdAndDate(
                     dr.getKakaoId(), dr.getDate()).get();
         }
