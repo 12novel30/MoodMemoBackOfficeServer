@@ -1,6 +1,8 @@
 package com.moodmemo.office.controller;
 
+import com.moodmemo.office.domain.Stamps;
 import com.moodmemo.office.dto.DailyReportDto;
+import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.service.DailyReportService;
 import com.moodmemo.office.service.StampService;
@@ -69,6 +71,13 @@ public class BackOfficeController {
         return userService.getUserStampCount(
                 LocalDate.now().minusDays(1));
     }
+    @GetMapping("/userStampAndLet/{kakaoId}")
+    public List<StampDto.Office> getUserStampAndLet(@PathVariable final String kakaoId) {
+        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
+        return userService.getUserStampAndLet(
+                kakaoId,
+                LocalDate.now().minusDays(1));
+    }
 
     @PostMapping(value = "/dailyReport",
             produces = "application/json;charset=UTF-8")
@@ -76,6 +85,7 @@ public class BackOfficeController {
     public HttpStatus upsertDailyReport(@RequestBody DailyReportDto.Response dr) {
         return dailyReportService.upsertDailyReport(dr);
     }
+
     @PostMapping(value = "/dailyReport/{id}/{date}",
             produces = "application/json;charset=UTF-8") // TODO - 로그 찍어야 함
     public HttpStatus upsertDailyReportByUser(@RequestBody DailyReportDto.Response dr) {

@@ -1,6 +1,8 @@
 package com.moodmemo.office.service;
 
+import com.moodmemo.office.domain.Stamps;
 import com.moodmemo.office.domain.Users;
+import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.exception.OfficeException;
 import com.moodmemo.office.repository.StampRepository;
@@ -179,5 +181,20 @@ public class UserService {
                 Timestamp.valueOf(
                         date.plusDays(1)
                                 + ENDDATE_TAIL.getDescription()));
+    }
+
+    public List<StampDto.Office> getUserStampAndLet(
+            String kakaoId, LocalDate date) {
+        return stampRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
+                kakaoId,
+                Timestamp.valueOf(
+                        date.minusDays(1)
+                                + STARTDATE_TAIL.getDescription()),
+                Timestamp.valueOf(
+                        date.plusDays(1)
+                                + ENDDATE_TAIL.getDescription()))
+                .stream()
+                .map(StampDto.Office::fromDocument)
+                .collect(Collectors.toList());
     }
 }

@@ -51,4 +51,23 @@ public class StampDto {
                     .build();
         }
     }
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Office {
+        private String kakaoId;
+        private LocalDateTime dateTime;
+        private String stamp;
+        private String memoLet;
+
+        public static Office fromDocument(Stamps stamps) {
+            return Office.builder()
+                    .kakaoId(stamps.getKakaoId())
+                    .dateTime(stamps.getDateTime())
+                    .stamp(stamps.getStamp())
+                    .memoLet(stamps.getMemoLet())
+                    .build();
+        }
+    }
 }
