@@ -15,9 +15,11 @@ import java.util.List;
 public class DailyReport {
     private String id;
     private String kakaoId;
+    private String username;
     private LocalDate date;
     private String title, bodyText;
     private String keyword1st;
     private String keyword2nd;
     private String keyword3rd;
+    private String time;
 }

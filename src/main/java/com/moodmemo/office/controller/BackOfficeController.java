@@ -32,11 +32,15 @@ public class BackOfficeController {
     }
 
     @GetMapping(value = "/dailyReport/{kakaoId}", produces = "application/json;charset=UTF-8")
-    public DailyReportDto.Response getDailyReport(@PathVariable final String kakaoId) {
+    public DailyReportDto.Response getYesterDayDailyReport(@PathVariable final String kakaoId) {
         // Todo - 오늘 날짜 & 카카오 Id로 stamp list 를 조회 -> AI APi에 전달.
         // Todo - AI Api 에서 받은 결과를 FE에 전달.
-        return stampService.createDailyReport(kakaoId);
+        return stampService.createYesterDayDailyReport(kakaoId);
         // Todo - 나중에는 날짜 변경할 수 있는 메소드 만들자
+    }
+    @GetMapping(value = "/dailyReport/final/{kakaoId}", produces = "application/json;charset=UTF-8")
+    public DailyReportDto.Response getYesterDayDailyReportDBVersion(@PathVariable final String kakaoId) {
+        return dailyReportService.getYesterDayDailyReportDBVersion(kakaoId);
     }
 
     @PostMapping(value = "/dailyReport", produces = "application/json;charset=UTF-8")

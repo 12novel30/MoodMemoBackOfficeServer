@@ -1,5 +1,6 @@
 package com.moodmemo.office.dto;
 
+import com.moodmemo.office.domain.DailyReport;
 import com.moodmemo.office.domain.Stamps;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,5 +35,18 @@ public class DailyReportDto {
         private String keyword2nd;
         private String keyword3rd;
         private String time;
+        public static Response fromDocument(DailyReport dailyReport) {
+            return Response.builder()
+                    .kakaoId(dailyReport.getKakaoId())
+                    .username(dailyReport.getUsername())
+                    .date(dailyReport.getDate())
+                    .title(dailyReport.getTitle())
+                    .bodyText(dailyReport.getBodyText())
+                    .keyword1st(dailyReport.getKeyword1st())
+                    .keyword2nd(dailyReport.getKeyword2nd())
+                    .keyword3rd(dailyReport.getKeyword3rd())
+                    .time(dailyReport.getTime())
+                    .build();
+        }
     }
 }

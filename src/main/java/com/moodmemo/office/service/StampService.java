@@ -48,7 +48,7 @@ public class StampService {
 
     }
 
-    public DailyReportDto.Response createDailyReport(String kakaoId) {
+    public DailyReportDto.Response createYesterDayDailyReport(String kakaoId) {
         return aiService.sendDailyReport(getDailyReportRequestDto(kakaoId));
     }
 

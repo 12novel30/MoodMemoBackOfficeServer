@@ -9,6 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+
+import static com.moodmemo.office.code.OfficeCode.ENDDATE_TAIL;
+import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -48,5 +54,20 @@ public class DailyReportService {
                     .build();
         }
         return ResponseEntity.ok(dailyReportRepository.save(dailyReport)).getStatusCode();
+    }
+
+    public DailyReportDto.Response getYesterDayDailyReportDBVersion(String kakaoId) {
+
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        return DailyReportDto.Response.fromDocument(
+                dailyReportRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
+                        kakaoId,
+                        Timestamp.valueOf(
+                                yesterday.minusDays(1)
+                                        + STARTDATE_TAIL.getDescription()),
+                        Timestamp.valueOf(
+                                yesterday.plusDays(1)
+                                        + ENDDATE_TAIL.getDescription())));
+
     }
 }
