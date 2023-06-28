@@ -64,4 +64,7 @@ public class DailyReportService {
                 dailyReportRepository.findByKakaoIdAndDate(kakaoId, date)
                         .orElseThrow(() -> new OfficeException(NO_DR)));
     }
+
+    public void updateDailyReportByUser(DailyReportDto.Response dr) {
+    }
 }
