@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @CrossOrigin(origins = "*")
 @RequestMapping("/api")
-public class UserController {
+public class BackOfficeController {
 
     // TODO - 에러처리해야함
 
