@@ -18,5 +18,4 @@ public class DailyReport {
     private LocalDate date;
     private String title, bodyText;
     private List<String> keyword;
-    private String time;
 }

@@ -31,8 +31,6 @@ public class DailyReportService {
                 dailyReport.setBodyText(dr.getBodyText());
             if (dr.getKeyword() != null)
                 dailyReport.setKeyword(dr.getKeyword());
-            if (dr.getTime() != null)
-                dailyReport.setTime(dr.getTime());
         } else {
             dailyReport = DailyReport.builder()
                     .kakaoId(dr.getKakaoId())
@@ -40,7 +38,6 @@ public class DailyReportService {
                     .title(dr.getTitle())
                     .keyword(dr.getKeyword())
                     .bodyText(dr.getBodyText())
-                    .time(dr.getTime())
                     .build();
         }
         return ResponseEntity.ok(dailyReportRepository.save(dailyReport));
