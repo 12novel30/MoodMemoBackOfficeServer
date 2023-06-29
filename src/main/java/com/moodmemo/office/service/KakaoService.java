@@ -80,8 +80,8 @@ public class KakaoService {
         Map<String, Object> action_params = getParamsFromAction(params);
 
         // get time from params
-        LocalTime time = LocalTime.parse(
-                getParamFromDetailParams(params, PARAMS_TIME.getDescription()));
+        String strTime = getParamFromDetailParams(params, PARAMS_TIME.getDescription());
+        LocalTime time = LocalTime.parse(strTime.substring(1, strTime.length() - 1));
         /* if 입력하는 시간: 03:00~23:59 ->
          *   if 바꿔두려는 시간: 03:00~23:59 -> -
          *   if 바꿔두려는 시간: 00:00~02:59 -> 어제 날짜로 입력
@@ -201,6 +201,12 @@ public class KakaoService {
     }
 
     public String validateStampByTime(String kakaoId, String time, LocalDate today) {
+
+        /*
+        * if */
+
+
+
         if (getByKakaoIdAndLocalDateTime(kakaoId, time, today).size() >= 1)
             return "SUCCESS";
         else
