@@ -2,24 +2,26 @@ package com.moodmemo.office.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moodmemo.office.code.OfficeErrorCode;
 import com.moodmemo.office.domain.Stamps;
 import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
+import com.moodmemo.office.exception.OfficeException;
 import com.moodmemo.office.repository.StampRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.moodmemo.office.code.KakaoCode.*;
+import static com.moodmemo.office.code.OfficeErrorCode.NO_STAMP;
 
 @Service
 @Slf4j
@@ -97,7 +99,7 @@ public class KakaoService {
                 .build();
     }
 
-    private static String getParamFromDetailParams(
+    public static String getParamFromDetailParams(
             Map<String, Object> params, String entity) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(
@@ -170,11 +172,41 @@ public class KakaoService {
     }
 
     public String validateStampByTime(String kakaoId, String time, LocalDate today) {
-        if (stampRepository.findByKakaoIdAndLocalTimeAndLocalDate(
-                kakaoId, LocalTime.parse(time), today)
+        if (getByKakaoIdAndLocalTimeAndLocalDate(kakaoId, time, today)
                 .isPresent())
             return "SUCCESS";
         else
             return "FAIL";
+    }
+
+    @Transactional(readOnly = true)
+    private Optional<Stamps> getByKakaoIdAndLocalTimeAndLocalDate(String kakaoId, String time, LocalDate today) {
+        return stampRepository.findByKakaoIdAndLocalTimeAndLocalDate(
+                kakaoId, LocalTime.parse(time), today);
+    }
+
+
+    public StampDto.Response getStampByTime(
+            String kakaoId, String time, LocalDate today) {
+        return StampDto.Response.fromDocument(
+                getByKakaoIdAndLocalTimeAndLocalDate(kakaoId, time, today)
+                        .orElseThrow(() -> new OfficeException(NO_STAMP)));
+    }
+
+    public void updateStampTime(StampDto.Response stampDto, String editTime) {
+//        stampDto.setDateTime();
+//        stampDto.setLocalTime();
+//
+//        return ResponseEntity.ok(
+//                stampRepository.save(
+//                        Stamps.builder()
+//                                .dateTime()
+//                                .kakaoId()
+//                                .stamp()
+//                                .localTime()
+//                                .localDate()
+//                                .build()
+//                ))
+//                .getStatusCode();
     }
 }

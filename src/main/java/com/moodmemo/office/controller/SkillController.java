@@ -161,10 +161,12 @@ public class SkillController {
         log.info(kakaoService.getParameterToString(params));
 
         // TODO - get target stamp
-        StampDto.Response dto = kakaoService.getStampByTime(
-                kakaoService.getKakaoIdParams(params),
-                params.get("utterance").toString(),
-                LocalDate.now());
+//        StampDto.Response dto = kakaoService.getStampByTime(
+//                ),
+//                params.get("utterance").toString(),
+//                LocalDate.now());kakaoService.getKakaoIdParams(params
+//        kakaoService.updateStampTime(dto,
+//                kakaoService.getParamFromDetailParams(params, "edit_time"));
         // TODO - update time
         return kakaoService.getStringObjectHashMap("memolet 발화리턴");
     }
