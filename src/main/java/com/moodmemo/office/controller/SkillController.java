@@ -2,6 +2,7 @@ package com.moodmemo.office.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.service.KakaoService;
 import com.moodmemo.office.service.StampService;
@@ -134,6 +135,38 @@ public class SkillController {
                 userService.getUserDRYesterday(
                         kakaoService.getKakaoIdParams(params),
                         LocalDate.now().minusDays(1)));
+    }
+
+    @PostMapping("/validate/stamp")
+    public HashMap<String, Object> validateStampByTimeAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+        // 변경/수정하려고 하는 스탬프가 존재하지 않을 때 검증 API
+        log.info(kakaoService.getParameterToString(params));
+
+        // 오늘의 스탬프를 수정하는 것으로 생각함.
+        return kakaoService.getValidatetHashMap(
+                kakaoService.validateStampByTime(
+                        kakaoService.getKakaoIdParams(params),
+                        params.get("utterance").toString(),
+                        LocalDate.now())); // TODO - 파라미터 들어오는거만 확인하면 된다
+    }
+    // TODO - 이번에 물어볼 때는 없어도 될 것 같다 - 없으면 안된다 로 물어보자
+
+    @PostMapping("/edit/time")
+    public HashMap<String, Object> callEditTimeAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        log.info(kakaoService.getParameterToString(params));
+
+        // TODO - get target stamp
+        StampDto.Response dto = kakaoService.getStampByTime(
+                kakaoService.getKakaoIdParams(params),
+                params.get("utterance").toString(),
+                LocalDate.now());
+        // TODO - update time
+        return kakaoService.getStringObjectHashMap("memolet 발화리턴");
     }
 
 

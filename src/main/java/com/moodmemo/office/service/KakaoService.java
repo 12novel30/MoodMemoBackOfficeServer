@@ -5,11 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moodmemo.office.domain.Stamps;
 import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
+import com.moodmemo.office.repository.StampRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +25,8 @@ import static com.moodmemo.office.code.KakaoCode.*;
 @Slf4j
 @RequiredArgsConstructor
 public class KakaoService {
+    private final StampRepository stampRepository;
+
     public static HashMap<String, Object> getStringObjectHashMap(String showText) {
         HashMap<String, Object> resultJson = new HashMap<>();
         HashMap<String, Object> template = new HashMap<>();
@@ -61,34 +66,17 @@ public class KakaoService {
         Map<String, Object> action_params = getParamsFromAction(params);
 
         // get timeStamp from params
-        // TODO - mapper 삭제하고 age 파트 더 깔끔히 작성
-        ObjectMapper mapper = new ObjectMapper();
         String time = getParamFromDetailParams(params, PARAMS_TIME.getDescription());
-
-//                mapper.writeValueAsString(
-//                        mapper.convertValue(
-//                                        mapper.convertValue(
-//                                                        mapper.convertValue(params.get("action"), Map.class)
-//                                                                .get("detailParams"), Map.class)
-//                                                .get(PARAMS_TIME.getDescription()), Map.class)
-//                                .get("origin"));
-                // time = ""13:14""
         String[] times = time.substring(1, time.length() - 1).split(":");
 
         String stamp = getParamFromDetailParams(params, PARAMS_EMOTION.getDescription());
         stamp = stamp.substring(1, stamp.length() - 1);
-
-        // set timeStamp (edit ver)
-//        LocalDateTime dateTime = LocalDateTime.now();
-//        dateTime.withHour(Integer.parseInt(times[0])).withMinute(Integer.parseInt(times[1]));
-//        log.info(dateTime.toString());
 
         return StampDto.Dummy.builder()
                 .kakaoId(getKakaoIdParams(params))
                 .dateTime(LocalDateTime.now()
                         .withHour(Integer.parseInt(times[0]))
                         .withMinute(Integer.parseInt(times[1])))
-//                .stamp(action_params.get(PARAMS_EMOTION.getDescription()).toString())
                 .stamp(stamp)
                 .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
                 .build();
@@ -96,8 +84,6 @@ public class KakaoService {
 
     public UserDto.Dummy getInfoParams(Map<String, Object> params) throws JsonProcessingException {
 
-        // TODO - mapper 삭제하고 age 파트 더 깔끔히 작성
-        ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> action_params = getParamsFromAction(params);
 
         return UserDto.Dummy.builder()
@@ -181,5 +167,14 @@ public class KakaoService {
         } else {
             return "SUCCESS";
         }
+    }
+
+    public String validateStampByTime(String kakaoId, String time, LocalDate today) {
+        if (stampRepository.findByKakaoIdAndLocalTimeAndLocalDate(
+                kakaoId, LocalTime.parse(time), today)
+                .isPresent())
+            return "SUCCESS";
+        else
+            return "FAIL";
     }
 }
