@@ -18,10 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.moodmemo.office.code.KakaoCode.*;
 import static com.moodmemo.office.code.OfficeErrorCode.NO_STAMP;
@@ -177,7 +174,9 @@ public class KakaoService {
     }
 
     private final DateTimeFormatter stampListToBotFormat =
-            DateTimeFormatter.ofPattern("E HH:mm");
+            DateTimeFormatter
+                    .ofPattern("E HH:mm")
+                    .withLocale(Locale.forLanguageTag("ko"));
 
     public String getTextFormatForStampList(List<Stamps> stampList) {
         String stampListText = "";
@@ -202,8 +201,17 @@ public class KakaoService {
 
     public String validateStampByTime(String kakaoId, String time, LocalDate today) {
 
-        /*
-        * if */
+        /* if 찾는 시간: 03:00~23:59 ->
+         *   if 바꾸려는 시간: 03:00~23:59 -> -
+         *   if 바꾸려는 시간: 00:00~02:59 -> 어제 날짜로 입력
+         * if 찾는 시간: 00:00~02:59 ->
+         *   if 바꾸려는 시간: 03:00~23:59 -> 어제 날짜로 입력
+         *   if 바꾸려는 시간: 00:00~02:59 -> -
+         *
+         * (입력하는 시간이 03:00~23:59 사이인가?) == (바꿔두려는 시간이 03:00~23:59 사이인가?)
+         * true=(n,n)(y,y) -> 오늘 날짜 그대로!
+         * false=(n,y)(y,n) -> 어제 날짜로!
+         * */
 
 
 
