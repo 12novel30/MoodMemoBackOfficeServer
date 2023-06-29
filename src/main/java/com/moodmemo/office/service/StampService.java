@@ -91,20 +91,22 @@ public class StampService {
                 List.of(WEEK3.getStartDate(), WEEK3.getEndDate()),
                 List.of(WEEK4.getStartDate(), WEEK4.getEndDate()));
 
-        LocalDate today = LocalDate.now();
-        log.info(today.toString());
-        log.info(WEEK1.getStartDate().toString());
-        for (List<LocalDate> week : weeks) {
-            if (validateIsInWeekRange(week, today)) {
+        for (List<LocalDate> week : weeks)
+            if (validateIsInWeekRange(week, LocalDate.now())) {
                 int weekNum = weeks.indexOf(week) + 1;
                 log.info("현재 주차: {}", weekNum);
                 return weekNum;
             }
-        }
         return 0;
     }
 
     private static boolean validateIsInWeekRange(List<LocalDate> week, LocalDate today) {
+
+
+
+
+
+        
         return (today.isAfter(week.get(0)) && today.isBefore(week.get(1)))
                 || today.isEqual(week.get(0))
                 || today.isEqual(week.get(1));

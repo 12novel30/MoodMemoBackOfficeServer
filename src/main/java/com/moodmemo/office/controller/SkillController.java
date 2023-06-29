@@ -31,7 +31,6 @@ public class SkillController {
     private final StampService stampService;
     private final UserService userService;
 
-    // TODO - 이번에 물어볼 때는 없어도 될 것 같다 - 없으면 안된다 로 물어보자
     @PostMapping("/userInfo")
     public HashMap<String, Object> callUserInfoAPI(
             @Valid @RequestBody Map<String, Object> params)
@@ -59,14 +58,16 @@ public class SkillController {
             @Valid @RequestBody Map<String, Object> params)
             throws JsonProcessingException {
 
+        // parameter logging
         log.info(kakaoService.getParameterToString(params));
 
         // save stamp
-        String kakaoId =
-                stampService.createStamp(kakaoService.getStampParams(params))
-                        .getKakaoId();
+        String kakaoId = stampService.createStamp(
+                kakaoService.getStampParams(params)).getKakaoId();
+
         // update week n 의 스탬프 개수
         userService.updateWeekCount(kakaoId, stampService.validateWeek());
+
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
         return kakaoService.getStringObjectHashMap("memolet 발화리턴");
     }
@@ -76,14 +77,16 @@ public class SkillController {
             @Valid @RequestBody Map<String, Object> params)
             throws JsonProcessingException {
 
+        // parameter logging
         log.info(kakaoService.getParameterToString(params));
 
         // save stamp
-        String kakaoId =
-                stampService.createStamp(kakaoService.getTimeChangedStampParams(params))
-                        .getKakaoId();
+        String kakaoId = stampService.createStamp(
+                kakaoService.getTimeChangedStampParams(params)).getKakaoId();
+
         // update week n 의 스탬프 개수
         userService.updateWeekCount(kakaoId, stampService.validateWeek());
+
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
         return kakaoService.getStringObjectHashMap("시간 변경 버전 memolet 발화리턴");
     }
@@ -103,8 +106,13 @@ public class SkillController {
     }
 
     @PostMapping("/stampList")
-    public HashMap<String, Object> callStampListAPI(@Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
+    public HashMap<String, Object> callStampListAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        // parameter logging
         log.info(kakaoService.getParameterToString(params));
+
         return kakaoService.getStringObjectHashMap(
                 kakaoService.getTextFormatForStampList(
                         stampService.getStampListByDate(
@@ -176,7 +184,13 @@ public class SkillController {
     }
 
 
-    // 아래는 예제 코드
+
+
+
+
+
+
+    /*----------아래는 예제 코드----------*/
     @RequestMapping(value = "/kkoChat/v1", method = {RequestMethod.POST, RequestMethod.GET}, headers = {"Accept=application/json"})
     public String callAPI(@RequestBody Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,5 +50,30 @@ public class DummyController {
         if (tmp3.isAfter(WEEK1.getStartDate()) && tmp3.isBefore(WEEK1.getEndDate()))
             log.info("tmp3: {}", tmp3);
 
+    }
+
+
+    @GetMapping("/tmp2")
+    public void tm2p() {
+        LocalTime tmp4 = LocalTime.of(2,59);
+        LocalTime tmp1 = LocalTime.of(3,0);
+        LocalTime tmp2 = LocalTime.of(3,1);
+        LocalTime tmp3 = LocalTime.of(23,59);
+        LocalTime tmp5 = LocalTime.of(0,0);
+        LocalTime tmp6 = LocalTime.of(0,1);
+
+
+        if (kakaoService.validateTimeIs3AMtoMidnight(tmp4))
+            log.info("{}", tmp4);
+        if (kakaoService.validateTimeIs3AMtoMidnight(tmp1))
+            log.info("{}", tmp1);
+        if (kakaoService.validateTimeIs3AMtoMidnight(tmp2))
+            log.info("{}", tmp2);
+        if (kakaoService.validateTimeIs3AMtoMidnight(tmp3))
+            log.info("{}", tmp3);
+        if (kakaoService.validateTimeIs3AMtoMidnight(tmp5))
+            log.info("{}", tmp5);
+        if (kakaoService.validateTimeIs3AMtoMidnight(tmp6))
+            log.info("{}", tmp6);
     }
 }

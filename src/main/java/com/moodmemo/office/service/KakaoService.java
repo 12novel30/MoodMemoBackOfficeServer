@@ -68,21 +68,46 @@ public class KakaoService {
                 .build();
     }
 
+    public Boolean validateTimeIs3AMtoMidnight(LocalTime time) {
+        if (time.isAfter(LocalTime.of(3, 0).minusNanos(1))
+                && time.isBefore(LocalTime.of(0, 0).minusNanos(1)))
+            return true;
+        else
+            return false;
+    }
+
     public StampDto.Dummy getTimeChangedStampParams(Map<String, Object> params) throws JsonProcessingException {
         Map<String, Object> action_params = getParamsFromAction(params);
 
-        // get timeStamp from params
-        String time = getParamFromDetailParams(params, PARAMS_TIME.getDescription());
-        String[] times = time.substring(1, time.length() - 1).split(":");
+        // get time from params
+        LocalTime time = LocalTime.parse(
+                getParamFromDetailParams(params, PARAMS_TIME.getDescription()));
+        /* if 입력하는 시간: 03:00~23:59 ->
+         *   if 바꿔두려는 시간: 03:00~23:59 -> -
+         *   if 바꿔두려는 시간: 00:00~02:59 -> 어제 날짜로 입력
+         * if 입력하는 시간: 00:00~02:59 ->
+         *   if 바꿔두려는 시간: 03:00~23:59 -> 어제 날짜로 입력
+         *   if 바꿔두려는 시간: 00:00~02:59 -> -
+         *
+         * (입력하는 시간이 03:00~23:59 사이인가?) == (바꿔두려는 시간이 03:00~23:59 사이인가?)
+         * true=(n,n)(y,y) -> 오늘 날짜 그대로!
+         * false=(n,y)(y,n) -> 어제 날짜로!
+         * */
+        LocalDateTime localDateTime;
+        if (validateTimeIs3AMtoMidnight(LocalTime.now())
+                == validateTimeIs3AMtoMidnight(time)) {
+            localDateTime = LocalDateTime.of(LocalDate.now(), time);
+        } else {
+            localDateTime = LocalDateTime.of(LocalDate.now().minusDays(1), time);
+        }
 
+        // get stamp from params
         String stamp = getParamFromDetailParams(params, PARAMS_EMOTION.getDescription());
         stamp = stamp.substring(1, stamp.length() - 1);
 
         return StampDto.Dummy.builder()
                 .kakaoId(getKakaoIdParams(params))
-                .dateTime(LocalDateTime.now()
-                        .withHour(Integer.parseInt(times[0]))
-                        .withMinute(Integer.parseInt(times[1])))
+                .dateTime(localDateTime)
                 .stamp(stamp)
                 .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
                 .build();
