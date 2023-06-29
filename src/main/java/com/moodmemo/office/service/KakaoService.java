@@ -242,4 +242,36 @@ public class KakaoService {
 
         return ResponseEntity.ok(stampRepository.save(targetStamp)).getStatusCode();
     }
+
+    public HttpStatus updateStampEmo(Map<String, Object> params,
+                                     String sys_time,
+                                     LocalDate nowDate) throws JsonProcessingException {
+
+        Stamps targetStamp = getStampByTime(getKakaoIdParams(params), sys_time, nowDate);
+
+        String edit_emo = getParamFromDetailParams(params, "edit_emo");
+        edit_emo = edit_emo.substring(1, edit_emo.length() - 1);
+        targetStamp.setStamp(edit_emo);
+
+        return ResponseEntity.ok(stampRepository.save(targetStamp)).getStatusCode();
+    }
+
+    public HttpStatus updateStampMemolet(Map<String, Object> params,
+                                         String sys_time,
+                                         LocalDate nowDate) throws JsonProcessingException {
+
+        Stamps targetStamp = getStampByTime(getKakaoIdParams(params), sys_time, nowDate);
+        Map<String, Object> action_params = getParamsFromAction(params);
+        targetStamp.setMemoLet(action_params.get("edit_memolet").toString());
+
+        return ResponseEntity.ok(stampRepository.save(targetStamp)).getStatusCode();
+    }
+
+    public void deleteStamp(Map<String, Object> params,
+                                  String sys_time,
+                                  LocalDate nowDate) throws JsonProcessingException {
+
+        Stamps targetStamp = getStampByTime(getKakaoIdParams(params), sys_time, nowDate);
+        stampRepository.delete(targetStamp);
+    }
 }

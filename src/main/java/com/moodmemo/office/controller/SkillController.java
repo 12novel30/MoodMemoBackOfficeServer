@@ -2,7 +2,6 @@ package com.moodmemo.office.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.service.KakaoService;
 import com.moodmemo.office.service.StampService;
@@ -132,7 +131,7 @@ public class SkillController {
     }
 
     @PostMapping("/dailyReport/yesterday")
-    public HashMap<String, Object> callDRAPI(
+    public HashMap<String, Object> callYesterdayDRAPI(
             @Valid @RequestBody Map<String, Object> params)
             throws JsonProcessingException {
 
@@ -161,6 +160,8 @@ public class SkillController {
                         params.get("utterance").toString(),
                         LocalDate.now()));
     }
+
+    // TODO - 디자인 패턴 활용할 것
     @PostMapping("/edit/time")
     public HashMap<String, Object> callEditTimeAPI(
             @Valid @RequestBody Map<String, Object> params)
@@ -176,16 +177,67 @@ public class SkillController {
         edit_time = edit_time.substring(1, edit_time.length() - 1);
 
         // updateStampTime
-        kakaoService.updateStampTime(params, sys_time, LocalDate.now(), edit_time);
+        log.info(kakaoService.updateStampTime(
+                params, sys_time, LocalDate.now(), edit_time).toString());
 
-        return kakaoService.getStringObjectHashMap("memolet 발화리턴");
+        return kakaoService.getStringObjectHashMap("시간 변경 발화리턴");
     }
 
+    @PostMapping("/edit/emo")
+    public HashMap<String, Object> callEditEmoAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
 
+        // parameter logging
+        log.info(kakaoService.getParameterToString(params));
 
+        // get time parameter
+        String sys_time = kakaoService.getParamFromDetailParams(params, "sys_time");
+        sys_time = sys_time.substring(1, sys_time.length() - 1);
 
+        // updateStampTime
+        log.info(kakaoService.updateStampEmo(
+                params, sys_time, LocalDate.now()).toString());
 
+        return kakaoService.getStringObjectHashMap("감정 변경 발화리턴");
+    }
 
+    @PostMapping("/edit/memolet")
+    public HashMap<String, Object> callEditMemoletAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        // parameter logging
+        log.info(kakaoService.getParameterToString(params));
+
+        // get time parameter
+        String sys_time = kakaoService.getParamFromDetailParams(params, "sys_time");
+        sys_time = sys_time.substring(1, sys_time.length() - 1);
+
+        // updateStampTime
+        log.info(kakaoService.updateStampMemolet(
+                params, sys_time, LocalDate.now()).toString());
+
+        return kakaoService.getStringObjectHashMap("memolet 변경 발화리턴");
+    }
+
+    @PostMapping("/delete")
+    public HashMap<String, Object> callDeleteStampAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        // parameter logging
+        log.info(kakaoService.getParameterToString(params));
+
+        // get time parameter
+        String sys_time = kakaoService.getParamFromDetailParams(params, "sys_time");
+        sys_time = sys_time.substring(1, sys_time.length() - 1);
+
+        // updateStampTime
+        kakaoService.deleteStamp(params, sys_time, LocalDate.now());
+
+        return kakaoService.getStringObjectHashMap("스탬프 삭제 발화리턴");
+    }
 
 
     /*----------아래는 예제 코드----------*/
