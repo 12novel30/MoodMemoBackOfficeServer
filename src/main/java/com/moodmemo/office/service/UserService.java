@@ -159,14 +159,14 @@ public class UserService {
         if (getStampCount(kakaoId, date) >= 2) {
             String strDate = date.format(DateTimeFormatter.ofPattern("YYYY-MM-dd"));
             return "🔔데일리 레포트 완성🔔" +
-                    "\nMoodMemo AI가 " + strDate + "의 일기를 완성했어요." +
-                    "\n아래 링크를 클릭하시면 확인 및 수정하실 수 있답니다😀!" +
+                    "\n\nMoodMemo AI가 " + strDate + "의 일기를 완성했어요🎉" +
+                    "\n아래 링크를 클릭하시면 확인 및 수정하실 수 있답니다😀" +
                     "\n\n링크: " +
                     "http://3.34.55.218/dailyReport/" +
                     getUser(kakaoId).getId() + "/" +
                     strDate;
         } else return "🔔데일리 레포트 미완성🔔" +
-                "\n어제 남겨주신 let의 개수가 2개 미만이라" +
+                "\n\n어제 남겨주신 let의 개수가 2개 미만이라" +
                 "\nMoodMemo AI가 일기를 만들어드리지 못했어요..." +
                 "\n오늘은 하루 2개 이상의 let을 남기고 AI 일기를 받아보세요!";
     }
