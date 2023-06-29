@@ -138,19 +138,19 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public HashMap<String, Object> getUserStampCount(LocalDate date) {
-        List<UserDto.StampCount> stampCountList = userRepository.findAllByOrderByUsername()
-                .stream()
-                .map(UserDto.StampCount::fromDocuments)
-                .collect(Collectors.toList());
 
-        for (UserDto.StampCount stampCount : stampCountList) {
-            stampCount.setStampCount(
-                    getStampCount(stampCount.getKakaoId(), date));
-        }
+        List<UserDto.StampCount> userDtoList =
+                userRepository.findAllByOrderByUsername()
+                        .stream()
+                        .map(UserDto.StampCount::fromDocuments)
+                        .collect(Collectors.toList());
+
+        for (UserDto.StampCount userDto : userDtoList)
+            userDto.setStampCount(getStampCount(userDto.getKakaoId(), date));
 
         HashMap<String, Object> resultJson = new HashMap<>();
         resultJson.put("info", date + "의 스탬프 개수");
-        resultJson.put("data", stampCountList);
+        resultJson.put("data", userDtoList);
 
         return resultJson;
     }
@@ -172,26 +172,16 @@ public class UserService {
     }
 
     private int getStampCount(String kakaoId, LocalDate date) {
+        List<LocalDateTime> timeRange = stampService.getTimeRangeByOneDay(date);
         return stampRepository.countByKakaoIdAndDateTimeBetween(
-                kakaoId,
-                Timestamp.valueOf(
-                        date.minusDays(1)
-                                + STARTDATE_TAIL.getDescription()),
-                Timestamp.valueOf(
-                        date.plusDays(1)
-                                + ENDDATE_TAIL.getDescription()));
+                kakaoId, timeRange.get(0), timeRange.get(1));
     }
 
     public List<StampDto.Office> getUserStampAndLet(
             String kakaoId, LocalDate date) {
+        List<LocalDateTime> timeRange = stampService.getTimeRangeByOneDay(date);
         return stampRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
-                kakaoId,
-                Timestamp.valueOf(
-                        date.minusDays(1)
-                                + STARTDATE_TAIL.getDescription()),
-                Timestamp.valueOf(
-                        date.plusDays(1)
-                                + ENDDATE_TAIL.getDescription()))
+                        kakaoId, timeRange.get(0), timeRange.get(1))
                 .stream()
                 .map(StampDto.Office::fromDocument)
                 .collect(Collectors.toList());

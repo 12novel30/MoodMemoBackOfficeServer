@@ -14,15 +14,18 @@ import java.util.List;
 public interface StampRepository extends MongoRepository<Stamps, String> {
 
     // please create method find by kakaoId and between dateTime sort by dateTime
-    List<Stamps> findByKakaoIdAndDateTimeBetweenOrderByDateTime(String kakaoId,
-                                                                Date startDateTime,
-                                                                Date endDateTime);
+    List<Stamps> findByKakaoIdAndDateTimeBetweenOrderByDateTime(
+            String kakaoId,
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime);
 
 //    Optional<Stamps> findByKakaoIdAndLocalTimeAndLocalDate(String kakaoId,
 //                                                           LocalTime localTime,
 //                                                           LocalDate localDate);
 
-    int countByKakaoIdAndDateTimeBetween(String kakaoId, Date startDateTime, Date endDateTime);
+    int countByKakaoIdAndDateTimeBetween(String kakaoId,
+                                         LocalDateTime startDateTime,
+                                         LocalDateTime endDateTime);
 
     List<Stamps> findByKakaoIdAndDateTimeBetween(String kakaoId,
                                                  LocalDateTime startDateTime,

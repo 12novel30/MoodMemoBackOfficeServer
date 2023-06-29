@@ -28,18 +28,18 @@ public class DailyReportService {
     public HttpStatus upsertDailyReport(DailyReportDto.Response dr) {
         DailyReport dailyReport = DailyReport.builder().build();
 
-        if (dailyReportRepository.findByKakaoIdAndDate(
-                dr.getKakaoId(), dr.getDate())
+        if (dailyReportRepository
+                .findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate())
                 .isPresent()) {
-            dailyReport = dailyReportRepository.findByKakaoIdAndDate(
-                    dr.getKakaoId(), dr.getDate()).get();
+            dailyReport = dailyReportRepository
+                    .findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate()).get();
         }
 
         if (dailyReport.getUsername() == null)
-            dailyReport.setUsername(userRepository.findByKakaoId(dr.getKakaoId())
-                    .orElseThrow(() -> new OfficeException(NO_USER))
-                    .getUsername());
-
+            dailyReport.setUsername(
+                    userRepository.findByKakaoId(dr.getKakaoId())
+                            .orElseThrow(() -> new OfficeException(NO_USER))
+                            .getUsername());
 
         if (dr.getKakaoId() != null)
             dailyReport.setKakaoId(dr.getKakaoId());
@@ -63,8 +63,8 @@ public class DailyReportService {
     }
 
     @Transactional(readOnly = true)
-    public DailyReportDto.Response getDailyReportDBVersion(
-            String kakaoId, LocalDate date) {
+    public DailyReportDto.Response getDailyReportDBVersion(String kakaoId,
+                                                           LocalDate date) {
         return DailyReportDto.Response.fromDocument(
                 dailyReportRepository.findByKakaoIdAndDate(kakaoId, date)
                         .orElseThrow(() -> new OfficeException(NO_DR)));

@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -21,8 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.moodmemo.office.code.EventCode.*;
-import static com.moodmemo.office.code.OfficeCode.ENDDATE_TAIL;
-import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
 import static com.moodmemo.office.code.OfficeErrorCode.NO_USER;
 
 @Service
@@ -34,15 +31,10 @@ public class StampService {
     private final AIService aiService;
 
     public StampDto.Response createStamp(StampDto.Dummy request) {
-        LocalDateTime ldt = request.getDateTime();
         return StampDto.Response.fromDocument(
                 stampRepository.save(
                         Stamps.builder()
                                 .kakaoId(request.getKakaoId())
-//                                .localDate(LocalDate.of(
-//                                        ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth()))
-//                                .localTime(LocalTime.of(
-//                                        ldt.getHour(), ldt.getMinute()))
                                 .dateTime(request.getDateTime())
                                 .stamp(request.getStamp())
                                 .memoLet(request.getMemoLet())
@@ -51,21 +43,22 @@ public class StampService {
 
     }
 
-    public DailyReportDto.Response createDailyReport(
-            String kakaoId, LocalDate date) {
+    public DailyReportDto.Response createDailyReport(String kakaoId,
+                                                     LocalDate date) {
         return aiService.sendDailyReport(
                 getDailyReportRequestDto(kakaoId, date));
     }
 
     @Transactional(readOnly = true)
-    private DailyReportDto.Request getDailyReportRequestDto(
-            String kakaoId, LocalDate date) {
+    private DailyReportDto.Request getDailyReportRequestDto(String kakaoId,
+                                                            LocalDate date) {
         return DailyReportDto.Request.builder()
                 .userDto(
                         UserDto.SendAI.fromDocuments(
                                 userRepository.findByKakaoId(kakaoId)
                                         .orElseThrow(() -> new OfficeException(NO_USER))))
-                .todayStampList(getStampListByDate(kakaoId, date))
+                .todayStampList(
+                        getStampListByDate(kakaoId, date))
                 .build();
     }
 
@@ -75,16 +68,20 @@ public class StampService {
         return getStampListByDate(kakaoId, today);
     }
 
+    public List<LocalDateTime> getTimeRangeByOneDay(LocalDate date) {
+        LocalTime standard = LocalTime.of(3, 0).minusNanos(1);
+        return List.of(
+                // 해당 일자의 새벽 3시 부터
+                LocalDateTime.of(date, standard),
+                // 익일 새벽 02:59까지
+                LocalDateTime.of(date.plusDays(1), standard)
+        );
+    }
+
     private List<Stamps> getStampListByDate(String kakaoId, LocalDate date) {
-        // TODO - Timestamp.valueOf 말고 좀 더 깔끔하게 변경할 것
+        List<LocalDateTime> timeRange = getTimeRangeByOneDay(date);
         return stampRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
-                kakaoId,
-                Timestamp.valueOf(
-                        date.minusDays(1)
-                                + STARTDATE_TAIL.getDescription()),
-                Timestamp.valueOf(
-                        date.plusDays(1)
-                                + ENDDATE_TAIL.getDescription()));
+                kakaoId, timeRange.get(0), timeRange.get(1));
     }
 
     public int validateWeek() {

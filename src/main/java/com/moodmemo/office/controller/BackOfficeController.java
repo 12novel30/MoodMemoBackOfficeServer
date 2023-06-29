@@ -22,7 +22,7 @@ import java.util.List;
 public class BackOfficeController {
 
     // TODO - 에러처리해야함
-
+    // Todo - 날짜 변경할 수 있는 메소드 필요
     private final UserService userService;
     private final StampService stampService;
     private final DailyReportService dailyReportService;
@@ -36,8 +36,7 @@ public class BackOfficeController {
             produces = "application/json;charset=UTF-8")
     public DailyReportDto.Response getDailyReport(
             @PathVariable final String kakaoId) {
-        // Todo - 날짜 변경할 수 있는 메소드 필요
-        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
+        // 새벽 3시 이후, "어제" 03:00 ~ 오늘 02:59 사이의 스탬프리스트를 가져온다.
         return stampService.createDailyReport(
                 kakaoId,
                 LocalDate.now().minusDays(1));
@@ -47,7 +46,7 @@ public class BackOfficeController {
             produces = "application/json;charset=UTF-8")
     public DailyReportDto.Response getDailyReportDBVersion(
             @PathVariable final String kakaoId) {
-        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
+        // 자정이 넘은 뒤, 어제의 DR 을 가져오는 것으로 생각함.
         return dailyReportService.getDailyReportDBVersion(
                 kakaoId,
                 LocalDate.now().minusDays(1));
@@ -58,6 +57,7 @@ public class BackOfficeController {
     public DailyReportDto.Response getDailyReportToUser(
             @PathVariable(value = "date") final String date,
             @PathVariable(value = "id") final String id) {
+        // 자정이 넘은 뒤, 어제의 DR 을 가져오는 것으로 생각함.
         return dailyReportService.getDailyReportDBVersion(
                 id,
                 LocalDate.now().minusDays(1));
@@ -65,14 +65,14 @@ public class BackOfficeController {
 
     @GetMapping("/userStampCount")
     public HashMap<String, Object> getUserStampCount() {
-        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
+        // 새벽 3시 이후, "어제" 03:00 ~ 오늘 02:59 사이의 스탬프리스트를 가져온다.
         return userService.getUserStampCount(
                 LocalDate.now().minusDays(1));
     }
 
     @GetMapping("/userStampAndLet/{kakaoId}")
     public List<StampDto.Office> getUserStampAndLet(@PathVariable final String kakaoId) {
-        // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
+        // 새벽 3시 이후, "어제" 03:00 ~ 오늘 02:59 사이의 스탬프리스트를 가져온다.
         return userService.getUserStampAndLet(
                 kakaoId,
                 LocalDate.now().minusDays(1));
