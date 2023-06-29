@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class DailyReportDto {
@@ -36,6 +35,7 @@ public class DailyReportDto {
         private String keyword2nd;
         private String keyword3rd;
         private String time;
+
         public static Response fromDocument(DailyReport dailyReport) {
             return Response.builder()
                     .kakaoId(dailyReport.getKakaoId())

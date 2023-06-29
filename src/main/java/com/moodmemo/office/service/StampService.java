@@ -39,10 +39,10 @@ public class StampService {
                 stampRepository.save(
                         Stamps.builder()
                                 .kakaoId(request.getKakaoId())
-                                .localDate(LocalDate.of(
-                                        ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth()))
-                                .localTime(LocalTime.of(
-                                        ldt.getHour(), ldt.getMinute()))
+//                                .localDate(LocalDate.of(
+//                                        ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth()))
+//                                .localTime(LocalTime.of(
+//                                        ldt.getHour(), ldt.getMinute()))
                                 .dateTime(request.getDateTime())
                                 .stamp(request.getStamp())
                                 .memoLet(request.getMemoLet())
@@ -61,9 +61,10 @@ public class StampService {
     private DailyReportDto.Request getDailyReportRequestDto(
             String kakaoId, LocalDate date) {
         return DailyReportDto.Request.builder()
-                .userDto(UserDto.SendAI.fromDocuments(
-                        userRepository.findByKakaoId(kakaoId)
-                                .orElseThrow(() -> new OfficeException(NO_USER))))
+                .userDto(
+                        UserDto.SendAI.fromDocuments(
+                                userRepository.findByKakaoId(kakaoId)
+                                        .orElseThrow(() -> new OfficeException(NO_USER))))
                 .todayStampList(getStampListByDate(kakaoId, date))
                 .build();
     }
@@ -75,6 +76,7 @@ public class StampService {
     }
 
     private List<Stamps> getStampListByDate(String kakaoId, LocalDate date) {
+        // TODO - Timestamp.valueOf 말고 좀 더 깔끔하게 변경할 것
         return stampRepository.findByKakaoIdAndDateTimeBetweenOrderByDateTime(
                 kakaoId,
                 Timestamp.valueOf(

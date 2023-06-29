@@ -29,17 +29,17 @@ public class BackOfficeController {
     private final StampService stampService;
     private final DailyReportService dailyReportService;
 
-    @GetMapping("/home") // 사용 안 할 예정
-    public List<UserDto.Response> getUserList() {
-        return userService.getAllUsers();
-    }
+//    @GetMapping("/home")
+//    public List<UserDto.Response> getUserList() {
+//        return userService.getAllUsers();
+//    }
 
     @GetMapping(value = "/dailyReport/{kakaoId}",
             produces = "application/json;charset=UTF-8")
     public DailyReportDto.Response getDailyReport(
             @PathVariable final String kakaoId) {
+        // Todo - 날짜 변경할 수 있는 메소드 필요
         // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.
-        // Todo - 나중에는 날짜 변경할 수 있는 메소드 만들자
         return stampService.createDailyReport(
                 kakaoId,
                 LocalDate.now().minusDays(1));

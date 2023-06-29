@@ -50,16 +50,4 @@ public class DummyController {
             log.info("tmp3: {}", tmp3);
 
     }
-
-    @PostMapping("/validate/validateStampByTimeAPI") // 테스트 완료
-    public HashMap<String, Object> validateStampByTimeAPI(
-            @Valid @RequestBody Map<String, Object> params) {
-        // 오늘의 스탬프를 수정하는 것으로 생각함.
-        LocalDate today = LocalDate.now();
-        return kakaoService.getValidatetHashMap(
-                kakaoService.validateStampByTime(
-                        params.get("kakaoId").toString(),
-                        params.get("utterance").toString(),
-                        today));
-    }
 }

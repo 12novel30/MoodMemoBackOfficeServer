@@ -8,6 +8,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.TimeZone;
 
 @SpringBootApplication
@@ -22,6 +25,9 @@ public class OfficeApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(OfficeApplication.class, args);
+        LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(), LocalTime.parse("13:03"));
+        System.out.println(dateTime);
+        System.out.println(dateTime.plusMinutes(1).minusNanos(1));
         System.out.println("fight!");
     }
 

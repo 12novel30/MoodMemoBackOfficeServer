@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface UserRepository extends MongoRepository<Users, String> {
 
     List<Users> findAllByOrderByUsername();
+
     Optional<Users> findByKakaoId(String kakaoId);
     // please count method by kakaoid and between dateTime
 
@@ -20,14 +21,5 @@ public interface UserRepository extends MongoRepository<Users, String> {
     List<Users> findTop1ByOrderByWeek3Desc();
 
     List<Users> findTop1ByOrderByWeek4Desc();
-
-    //    find week1 by kakaoId
-    Optional<Users> findWeek1ByKakaoId(String kakaoId);
-
-    Optional<Users> findWeek2ByKakaoId(String kakaoId);
-
-    Optional<Users> findWeek3ByKakaoId(String kakaoId);
-
-    Optional<Users> findWeek4ByKakaoId(String kakaoId);
 
 }
