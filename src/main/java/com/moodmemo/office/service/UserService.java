@@ -75,11 +75,11 @@ public class UserService {
     }
 
     private final DateTimeFormatter rankToBotFormat =
-            DateTimeFormatter.ofPattern("HH:mm");
+            DateTimeFormatter.ofPattern("MM/dd HH:mm");
 
     public String getMyRanking(String kakaoId) {
 
-        int myStampCount = 0;
+        int myStampCount;
         int weekNum = stampService.validateWeek();
         String returnFormat = weekNum + "주차 랭킹 (" +
                 LocalDateTime.now().format(rankToBotFormat) +
@@ -108,7 +108,7 @@ public class UserService {
             }
 
         // 1등 아닌 경우
-        int top1StampCount = 0;
+        int top1StampCount;
         if (weekNum == 1) {
             top1StampCount = top1ForThisWeek.get(0).getWeek1();
             myStampCount = getUser(kakaoId).getWeek1();
@@ -131,7 +131,7 @@ public class UserService {
     }
 
     public boolean validateUserAlreadyExist(String kakaoId) {
-        if (userRepository.findByKakaoId(kakaoId) != null)
+        if (userRepository.findByKakaoId(kakaoId).isPresent())
             return true; // 이미 있다
         return false; // 없다
     }
