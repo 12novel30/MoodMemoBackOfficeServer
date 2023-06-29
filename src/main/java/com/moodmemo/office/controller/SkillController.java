@@ -150,6 +150,8 @@ public class SkillController {
             @Valid @RequestBody Map<String, Object> params)
             throws JsonProcessingException {
         // 변경/수정하려고 하는 스탬프가 존재하지 않을 때 검증 API
+
+        // parameter logging
         log.info(kakaoService.getParameterToString(params));
 
         // 오늘의 스탬프를 수정하는 것으로 생각함.
@@ -159,27 +161,23 @@ public class SkillController {
                         params.get("utterance").toString(),
                         LocalDate.now()));
     }
-
-
-    @PostMapping("/edit/time") // TODO - 파라미터 들어오는거만 확인하면 된다
+    @PostMapping("/edit/time")
     public HashMap<String, Object> callEditTimeAPI(
             @Valid @RequestBody Map<String, Object> params)
             throws JsonProcessingException {
 
+        // parameter logging
         log.info(kakaoService.getParameterToString(params));
 
+        // get time parameter
         String sys_time = kakaoService.getParamFromDetailParams(params, "sys_time");
         sys_time = sys_time.substring(1, sys_time.length() - 1);
         String edit_time = kakaoService.getParamFromDetailParams(params, "edit_time");
         edit_time = edit_time.substring(1, edit_time.length() - 1);
 
-        StampDto.Response targetStamp = kakaoService.getStampByTime(
-                kakaoService.getKakaoIdParams(params),
-                sys_time,
-                LocalDate.now());
+        // updateStampTime
+        kakaoService.updateStampTime(params, sys_time, LocalDate.now(), edit_time);
 
-        kakaoService.updateStampTime(targetStamp, edit_time);
-        // TODO - update time
         return kakaoService.getStringObjectHashMap("memolet 발화리턴");
     }
 

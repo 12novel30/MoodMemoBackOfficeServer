@@ -78,25 +78,9 @@ public class KakaoService {
 
         // get time from params
         String strTime = getParamFromDetailParams(params, PARAMS_TIME.getDescription());
-        LocalTime time = LocalTime.parse(strTime.substring(1, strTime.length() - 1));
-        /* if 입력하는 시간: 03:00~23:59 ->
-         *   if 바꿔두려는 시간: 03:00~23:59 -> -
-         *   if 바꿔두려는 시간: 00:00~02:59 -> 어제 날짜로 입력
-         * if 입력하는 시간: 00:00~02:59 ->
-         *   if 바꿔두려는 시간: 03:00~23:59 -> 어제 날짜로 입력
-         *   if 바꿔두려는 시간: 00:00~02:59 -> -
-         *
-         * (입력하는 시간이 03:00~23:59 사이인가?) == (바꿔두려는 시간이 03:00~23:59 사이인가?)
-         * true=(n,n)(y,y) -> 오늘 날짜 그대로!
-         * false=(n,y)(y,n) -> 어제 날짜로!
-         * */
-        LocalDateTime localDateTime;
-        if (validateTimeIs3AMtoMidnight(LocalTime.now())
-                == validateTimeIs3AMtoMidnight(time)) {
-            localDateTime = LocalDateTime.of(LocalDate.now(), time);
-        } else {
-            localDateTime = LocalDateTime.of(LocalDate.now().minusDays(1), time);
-        }
+        LocalDateTime localDateTime = getLocalDateTimeBy3AM(
+                LocalDate.now(),
+                LocalTime.parse(strTime.substring(1, strTime.length() - 1)));
 
         // get stamp from params
         String stamp = getParamFromDetailParams(params, PARAMS_EMOTION.getDescription());
@@ -200,21 +184,6 @@ public class KakaoService {
     }
 
     public String validateStampByTime(String kakaoId, String time, LocalDate today) {
-
-        /* if 찾는 시간: 03:00~23:59 ->
-         *   if 바꾸려는 시간: 03:00~23:59 -> -
-         *   if 바꾸려는 시간: 00:00~02:59 -> 어제 날짜로 입력
-         * if 찾는 시간: 00:00~02:59 ->
-         *   if 바꾸려는 시간: 03:00~23:59 -> 어제 날짜로 입력
-         *   if 바꾸려는 시간: 00:00~02:59 -> -
-         *
-         * (입력하는 시간이 03:00~23:59 사이인가?) == (바꿔두려는 시간이 03:00~23:59 사이인가?)
-         * true=(n,n)(y,y) -> 오늘 날짜 그대로!
-         * false=(n,y)(y,n) -> 어제 날짜로!
-         * */
-
-
-
         if (getByKakaoIdAndLocalDateTime(kakaoId, time, today).size() >= 1)
             return "SUCCESS";
         else
@@ -225,36 +194,52 @@ public class KakaoService {
     private List<Stamps> getByKakaoIdAndLocalDateTime(
             String kakaoId, String time, LocalDate today) {
 
-        LocalDateTime dateTime = LocalDateTime.of(today, LocalTime.parse(time));
+        LocalDateTime localDateTime = getLocalDateTimeBy3AM(
+                today,
+                LocalTime.parse(time));
+
         return stampRepository.findByKakaoIdAndDateTimeBetween(
-                kakaoId, dateTime, dateTime.plusMinutes(1).minusNanos(1));
+                kakaoId, localDateTime.minusNanos(1), localDateTime.plusMinutes(1).minusNanos(1));
+    }
+
+    private LocalDateTime getLocalDateTimeBy3AM(LocalDate today, LocalTime localTime) {
+        /* if 찾는 시간: 03:00~23:59 ->
+         *   if 바꾸려는 시간: 03:00~23:59 -> -
+         *   if 바꾸려는 시간: 00:00~02:59 -> 어제 날짜에서 찾기
+         * if 찾는 시간: 00:00~02:59 ->
+         *   if 바꾸려는 시간: 03:00~23:59 -> 어제 날짜에서 찾기
+         *   if 바꾸려는 시간: 00:00~02:59 -> -
+         *
+         * (찾는 시간이 03:00~23:59 사이인가?) == (바꾸려는 시간이 03:00~23:59 사이인가?)
+         * true=(n,n)(y,y) -> 오늘 날짜 그대로!
+         * false=(n,y)(y,n) -> 어제 날짜로!
+         * */
+        if (validateTimeIs3AMtoMidnight(LocalTime.now())
+                == validateTimeIs3AMtoMidnight(localTime))
+            return LocalDateTime.of(today, localTime);
+        else
+            return LocalDateTime.of(today.minusDays(1), localTime);
     }
 
 
-    public StampDto.Response getStampByTime(
+    public Stamps getStampByTime(
             String kakaoId, String time, LocalDate today) {
         List<Stamps> stampsList = getByKakaoIdAndLocalDateTime(kakaoId, time, today);
         if (stampsList.size() < 1) throw new OfficeException(NO_STAMP);
         else
-            return StampDto.Response.fromDocument(stampsList.get(0));
+            return stampsList.get(0);
     }
 
-    public HttpStatus updateStampTime(StampDto.Response stampDto, String editTime) {
+    public HttpStatus updateStampTime(Map<String, Object> params,
+                                      String sys_time,
+                                      LocalDate nowDate,
+                                      String strEditTime) {
 
-        LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(), LocalTime.parse(editTime));
+        Stamps targetStamp = getStampByTime(getKakaoIdParams(params), sys_time, nowDate);
+        targetStamp.setDateTime(getLocalDateTimeBy3AM(
+                nowDate,
+                LocalTime.parse(strEditTime)));
 
-        stampDto.setDateTime(dateTime);
-
-        return ResponseEntity.ok(
-                        stampRepository.save(
-                                Stamps.builder()
-                                        .id(stampDto.getId())
-                                        .dateTime(stampDto.getDateTime())
-                                        .kakaoId(stampDto.getKakaoId())
-                                        .stamp(stampDto.getStamp())
-                                        .memoLet(stampDto.getMemoLet())
-                                        .build()
-                        ))
-                .getStatusCode();
+        return ResponseEntity.ok(stampRepository.save(targetStamp)).getStatusCode();
     }
 }
