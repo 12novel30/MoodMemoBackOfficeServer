@@ -177,7 +177,7 @@ public class KakaoService {
     }
 
     private final DateTimeFormatter stampListToBotFormat =
-            DateTimeFormatter.ofPattern("HH:mm");
+            DateTimeFormatter.ofPattern("E HH:mm");
 
     public String getTextFormatForStampList(List<Stamps> stampList) {
         String stampListText = "";
