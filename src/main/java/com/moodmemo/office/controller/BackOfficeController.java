@@ -1,9 +1,7 @@
 package com.moodmemo.office.controller;
 
-import com.moodmemo.office.domain.Stamps;
 import com.moodmemo.office.dto.DailyReportDto;
 import com.moodmemo.office.dto.StampDto;
-import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.service.DailyReportService;
 import com.moodmemo.office.service.StampService;
 import com.moodmemo.office.service.UserService;
@@ -71,6 +69,7 @@ public class BackOfficeController {
         return userService.getUserStampCount(
                 LocalDate.now().minusDays(1));
     }
+
     @GetMapping("/userStampAndLet/{kakaoId}")
     public List<StampDto.Office> getUserStampAndLet(@PathVariable final String kakaoId) {
         // 자정이 넘은 뒤, 어제의 스탬프리스트들을 가져오는 것으로 생각함.

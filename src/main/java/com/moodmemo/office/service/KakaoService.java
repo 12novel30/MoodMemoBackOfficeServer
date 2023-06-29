@@ -209,6 +209,7 @@ public class KakaoService {
         return ResponseEntity.ok(
                         stampRepository.save(
                                 Stamps.builder()
+                                        .id(stampDto.getId())
                                         .dateTime(stampDto.getDateTime())
                                         .kakaoId(stampDto.getKakaoId())
                                         .stamp(stampDto.getStamp())

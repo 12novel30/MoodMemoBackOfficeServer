@@ -31,7 +31,7 @@ public class SkillController {
     private final StampService stampService;
     private final UserService userService;
 
-
+    // TODO - 이번에 물어볼 때는 없어도 될 것 같다 - 없으면 안된다 로 물어보자
     @PostMapping("/userInfo")
     public HashMap<String, Object> callUserInfoAPI(
             @Valid @RequestBody Map<String, Object> params)
@@ -151,7 +151,7 @@ public class SkillController {
                         params.get("utterance").toString(),
                         LocalDate.now()));
     }
-    // TODO - 이번에 물어볼 때는 없어도 될 것 같다 - 없으면 안된다 로 물어보자
+
 
     @PostMapping("/edit/time") // TODO - 파라미터 들어오는거만 확인하면 된다
     public HashMap<String, Object> callEditTimeAPI(
@@ -160,14 +160,17 @@ public class SkillController {
 
         log.info(kakaoService.getParameterToString(params));
 
+        String sys_time = kakaoService.getParamFromDetailParams(params, "sys_time");
+        sys_time = sys_time.substring(1, sys_time.length() - 1);
+        String edit_time = kakaoService.getParamFromDetailParams(params, "edit_time");
+        edit_time = edit_time.substring(1, edit_time.length() - 1);
+
         StampDto.Response targetStamp = kakaoService.getStampByTime(
                 kakaoService.getKakaoIdParams(params),
-                kakaoService.getParamFromDetailParams(params, "sys_time"),
+                sys_time,
                 LocalDate.now());
 
-        kakaoService.updateStampTime(
-                targetStamp,
-                kakaoService.getParamFromDetailParams(params, "edit_time"));
+        kakaoService.updateStampTime(targetStamp, edit_time);
         // TODO - update time
         return kakaoService.getStringObjectHashMap("memolet 발화리턴");
     }

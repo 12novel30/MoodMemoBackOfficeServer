@@ -29,6 +29,7 @@ public class StampDto {
     @NoArgsConstructor
     @Builder
     public static class Response {
+        private String id; // TODO - updateStampTime 로직 변경해서 dto 안쓰게 되면 지울 것
         private String kakaoId;
         private LocalDateTime dateTime;
         private String stamp;
@@ -36,6 +37,7 @@ public class StampDto {
 
         public static Response fromDocument(Stamps stamps) {
             return Response.builder()
+                    .id(stamps.getId())
                     .kakaoId(stamps.getKakaoId())
                     .dateTime(stamps.getDateTime())
                     .stamp(stamps.getStamp())
