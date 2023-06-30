@@ -72,4 +72,13 @@ public class DailyReportService {
 
     public void updateDailyReportByUser(DailyReportDto.Response dr) {
     }
+
+    @Transactional(readOnly = true)
+    public DailyReportDto.Response getDailyReportDBVersionToUser(String id, LocalDate date) {
+        return getDailyReportDBVersion(
+                userRepository.findById(id)
+                        .orElseThrow(() -> new OfficeException(NO_USER))
+                        .getKakaoId(),
+                date);
+    }
 }

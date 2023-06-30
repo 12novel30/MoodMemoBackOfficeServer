@@ -58,7 +58,7 @@ public class BackOfficeController {
             @PathVariable(value = "date") final String date,
             @PathVariable(value = "id") final String id) {
         // 자정이 넘은 뒤, 어제의 DR 을 가져오는 것으로 생각함.
-        return dailyReportService.getDailyReportDBVersion(
+        return dailyReportService.getDailyReportDBVersionToUser(
                 id,
                 LocalDate.now().minusDays(1));
     }
