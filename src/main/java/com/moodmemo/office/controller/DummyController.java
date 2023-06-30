@@ -1,5 +1,6 @@
 package com.moodmemo.office.controller;
 
+import com.moodmemo.office.domain.Users;
 import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.service.KakaoService;
@@ -13,6 +14,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.moodmemo.office.code.EventCode.WEEK1;
@@ -75,5 +77,10 @@ public class DummyController {
             log.info("{}", tmp5);
         if (kakaoService.validateTimeIs3AMtoMidnight(tmp6))
             log.info("{}", tmp6);
+    }
+
+    @GetMapping("/all")
+    public List<Users> userEntityAll() {
+        return userService.getuserEntityAll();
     }
 }

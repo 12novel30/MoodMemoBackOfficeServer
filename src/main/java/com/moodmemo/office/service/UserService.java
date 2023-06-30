@@ -229,4 +229,8 @@ public class UserService {
                 .map(StampDto.Office::fromDocument)
                 .collect(Collectors.toList());
     }
+
+    public List<Users> getuserEntityAll() {
+        return userRepository.findAll();
+    }
 }
