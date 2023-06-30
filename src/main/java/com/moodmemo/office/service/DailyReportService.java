@@ -34,12 +34,12 @@ public class DailyReportService {
             dailyReport = dailyReportRepository
                     .findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate()).get();
         }
-
-        if (dailyReport.getUsername() == null)
+        if (dailyReport.getUsername() == null) {
             dailyReport.setUsername(
                     userRepository.findByKakaoId(dr.getKakaoId())
                             .orElseThrow(() -> new OfficeException(NO_USER))
                             .getUsername());
+        }
 
         if (dr.getKakaoId() != null)
             dailyReport.setKakaoId(dr.getKakaoId());
