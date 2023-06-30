@@ -53,16 +53,16 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public void updateWeekCount(String kakaoId, int weekNum) {
+    public void updateWeekCount(String kakaoId, int weekNum, int cnt) {
         Users user = getUser(kakaoId);
         if (weekNum == 1)
-            user.setWeek1(user.getWeek1() + 1);
+            user.setWeek1(user.getWeek1() + cnt);
         else if (weekNum == 2)
-            user.setWeek2(user.getWeek2() + 1);
+            user.setWeek2(user.getWeek2() + cnt);
         else if (weekNum == 3)
-            user.setWeek3(user.getWeek3() + 1);
+            user.setWeek3(user.getWeek3() + cnt);
         else if (weekNum == 4)
-            user.setWeek4(user.getWeek4() + 1);
+            user.setWeek4(user.getWeek4() + cnt);
 
         userRepository.save(user);
     }

@@ -28,6 +28,8 @@ import static com.moodmemo.office.code.OfficeErrorCode.NO_STAMP;
 @RequiredArgsConstructor
 public class KakaoService {
     private final StampRepository stampRepository;
+    private final UserService userService;
+    private final StampService stampService;
 
     public static HashMap<String, Object> getStringObjectHashMap(String showText) {
         HashMap<String, Object> resultJson = new HashMap<>();
@@ -270,8 +272,11 @@ public class KakaoService {
     public void deleteStamp(Map<String, Object> params,
                                   String sys_time,
                                   LocalDate nowDate) throws JsonProcessingException {
+        String kakaoId = getKakaoIdParams(params);
 
-        Stamps targetStamp = getStampByTime(getKakaoIdParams(params), sys_time, nowDate);
+        Stamps targetStamp = getStampByTime(kakaoId, sys_time, nowDate);
         stampRepository.delete(targetStamp);
+
+        userService.updateWeekCount(kakaoId, stampService.validateWeek(), -1);
     }
 }

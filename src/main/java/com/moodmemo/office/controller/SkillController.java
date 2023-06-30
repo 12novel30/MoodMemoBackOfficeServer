@@ -65,7 +65,7 @@ public class SkillController {
                 kakaoService.getStampParams(params)).getKakaoId();
 
         // update week n 의 스탬프 개수
-        userService.updateWeekCount(kakaoId, stampService.validateWeek());
+        userService.updateWeekCount(kakaoId, stampService.validateWeek(), 1);
 
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
         return kakaoService.getStringObjectHashMap("memolet 발화리턴");
@@ -84,7 +84,7 @@ public class SkillController {
                 kakaoService.getTimeChangedStampParams(params)).getKakaoId();
 
         // update week n 의 스탬프 개수
-        userService.updateWeekCount(kakaoId, stampService.validateWeek());
+        userService.updateWeekCount(kakaoId, stampService.validateWeek(), 1);
 
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
         return kakaoService.getStringObjectHashMap("시간 변경 버전 memolet 발화리턴");
@@ -245,7 +245,7 @@ public class SkillController {
         String sys_time = kakaoService.getParamFromDetailParams(params, "sys_time");
         sys_time = sys_time.substring(1, sys_time.length() - 1);
 
-        // updateStampTime
+        // updateStampTime & update week n 의 스탬프 개수 (minus)
         kakaoService.deleteStamp(params, sys_time, LocalDate.now());
 
         return kakaoService.getStringObjectHashMap("스탬프 삭제 발화리턴");
