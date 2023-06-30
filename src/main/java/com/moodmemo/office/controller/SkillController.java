@@ -130,6 +130,18 @@ public class SkillController {
                         kakaoService.getKakaoIdParams(params)));
     }
 
+    @PostMapping("/prize/postWeek")
+    public HashMap<String, Object> callPrizePostWeekAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        log.info(kakaoService.getParameterToString(params));
+
+        return kakaoService.getStringObjectHashMap(
+                userService.getPrizePostWeek(
+                        kakaoService.getKakaoIdParams(params)));
+    }
+
     @PostMapping("/dailyReport/yesterday")
     public HashMap<String, Object> callYesterdayDRAPI(
             @Valid @RequestBody Map<String, Object> params)

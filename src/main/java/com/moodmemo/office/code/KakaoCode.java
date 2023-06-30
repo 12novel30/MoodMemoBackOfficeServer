@@ -17,6 +17,10 @@ public enum KakaoCode {
     PARAMS_EMOTION("emotion"),
     PARAMS_TIME("sys_time"), // TODO - 테스트 필요
     USER_ID("id"),
+
+
+
+    EVENT_WEEK1_GIFT_SEND_DAY("다음주 중"), //n월 n일
     ;
     private final String description;
 }

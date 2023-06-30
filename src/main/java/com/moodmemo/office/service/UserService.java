@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,8 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.moodmemo.office.code.OfficeCode.ENDDATE_TAIL;
-import static com.moodmemo.office.code.OfficeCode.STARTDATE_TAIL;
+import static com.moodmemo.office.code.KakaoCode.EVENT_WEEK1_GIFT_SEND_DAY;
 import static com.moodmemo.office.code.OfficeErrorCode.NO_USER;
 
 @Service
@@ -77,13 +75,17 @@ public class UserService {
     private final DateTimeFormatter rankToBotFormat =
             DateTimeFormatter.ofPattern("MM/dd HH:mm");
 
-    public String getMyRanking(String kakaoId) {
+    private String getAboutRankingFormat(int weekNum,
+                                         String str_standard,
+                                         String str_errorForWeekNum,
+                                         String str_endingForWinner,
+                                         String str_endingForLoser,
+                                         String kakaoId) {
 
         int myStampCount;
-        int weekNum = stampService.validateWeek();
-        String returnFormat = weekNum + "주차 랭킹 (" +
-                LocalDateTime.now().format(rankToBotFormat) +
-                " 기준)" + "\n==========\n";
+        String returnFormat = weekNum + "주차 랭킹"
+                + str_standard
+                + "\n==========\n";
 
         List<UserDto.Rank> top1ForThisWeek =
                 stampService.getTop1ForThisWeek(weekNum);
@@ -100,10 +102,10 @@ public class UserService {
                     myStampCount = top.getWeek3();
                 else if (weekNum == 4)
                     myStampCount = top.getWeek4();
-                else return "현재는 이벤트 기간이 아닙니다!";
+                else return str_errorForWeekNum;
 
-                returnFormat += "축하드립니다! 총 스탬프 " + myStampCount + "개로 1등입니다." +
-                        "\n\n앞으로도 많은 스탬프를 남겨 1등을 지키시길 바라요!🥰";
+                returnFormat += "축하드립니다! 총 스탬프 " + myStampCount + "개로 1등입니다."
+                        + "\n\n" + str_endingForWinner;
                 return returnFormat;
             }
 
@@ -121,13 +123,54 @@ public class UserService {
         } else if (weekNum == 4) {
             top1StampCount = top1ForThisWeek.get(0).getWeek4();
             myStampCount = getUser(kakaoId).getWeek4();
-        } else return "현재는 이벤트 기간이 아닙니다!";
+        } else return str_errorForWeekNum;
 
         returnFormat +=
-                "현재 1등 : " + top1StampCount + "개" +
-                        "\n내 스탬프 개수 : " + myStampCount + "개" +
-                        "\n\n더 많은 스탬프를 남겨 1등을 탈환하길 바라요!🥰";
+                "현재 1등 : " + top1StampCount + "개"
+                        + "\n내 스탬프 개수 : " + myStampCount + "개"
+                        + "\n\n" + str_endingForLoser;
         return returnFormat;
+    }
+
+    public String getMyRanking(String kakaoId) {
+        int weekNum = stampService.validateWeek();
+        String str_standard = " ("
+                + LocalDateTime.now().format(rankToBotFormat)
+                + " 기준)";
+        String str_errorForWeekNum = "현재는 이벤트 기간이 아닙니다!";
+        String str_endingForWinner = "앞으로도 많은 스탬프를 남겨 1등을 지키시길 바라요!🥰";
+        String str_endingForLoser = "더 많은 스탬프를 남겨 1등을 탈환하길 바라요!🥰";
+
+        return getAboutRankingFormat(
+                weekNum,
+                str_standard,
+                str_errorForWeekNum,
+                str_endingForWinner,
+                str_endingForLoser,
+                kakaoId);
+    }
+
+    public String getPrizePostWeek(String kakaoId) {
+        int weekNum = stampService.validateWeek() - 1; // 지난주의 랭킹 확인
+        String str_standard = " (fin)";
+        String str_errorForWeekNum = "이벤트 기간이 아닙니다!";
+        String str_endingForWinner = "MoodMemo 서비스를 열심히 이용해주셔서 정말 감사드립니다!" +
+                "\n감사의 의미를 담아, 1등 경품인 🍔맘스터치🍔 기프티콘은 " +
+                EVENT_WEEK1_GIFT_SEND_DAY.getDescription() +
+                "에 발송드리도록 하겠습니다." +
+                "\n더 업그레이드 된 이번 주차에서도 많은 스탬프를 남겨 다시 한 번 1등에 도전하시길 바라요!🥰";
+        String str_endingForLoser = "아쉽게도 지난 주차에서는 1위를 하지 못했어요😓" +
+                "\n\n하지만 걱정하지 마세요!" +
+                "\n지난 주의 기록과는 별개로, 새로운 주간에 찍은 스탬프로 다시 한 번 1등에 도전할 수 있답니다🔥" +
+                "\n\n더 업그레이드 된 MoodMemo 와 함께 하루를 기록해보세요!😀";
+
+        return getAboutRankingFormat(
+                weekNum,
+                str_standard,
+                str_errorForWeekNum,
+                str_endingForWinner,
+                str_endingForLoser,
+                kakaoId);
     }
 
     public boolean validateUserAlreadyExist(String kakaoId) {
