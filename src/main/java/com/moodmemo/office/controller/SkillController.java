@@ -126,7 +126,7 @@ public class SkillController {
         log.info(kakaoService.getParameterToString(params));
 
         return kakaoService.getStringObjectHashMap(
-                userService.getMyRanking(
+                userService.tmpRnag(
                         kakaoService.getKakaoIdParams(params)));
     }
 

@@ -4,7 +4,6 @@ import com.moodmemo.office.domain.Stamps;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 // create config for mongodb

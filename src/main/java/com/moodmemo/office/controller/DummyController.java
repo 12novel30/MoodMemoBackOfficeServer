@@ -83,4 +83,9 @@ public class DummyController {
     public List<Users> userEntityAll() {
         return userService.getuserEntityAll();
     }
+
+    @GetMapping("/ranking/new/{kakaoId}")
+    public String rankTest(@PathVariable final String kakaoId) {
+        return userService.tmpRnag(kakaoId);
+    }
 }

@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.moodmemo.office.code.KakaoCode.EVENT_WEEK1_GIFT_SEND_DAY;
@@ -129,6 +128,126 @@ public class UserService {
                 "현재 1등 : " + top1StampCount + "개"
                         + "\n내 스탬프 개수 : " + myStampCount + "개"
                         + "\n\n" + str_endingForLoser;
+        return returnFormat;
+    }
+
+    public String tmpRnag(String kakaoId) {
+        int weekNum = stampService.validateWeek();
+        String str_standard = " ("
+                + LocalDateTime.now().format(rankToBotFormat)
+                + " 기준)";
+        String str_errorForWeekNum = "현재는 이벤트 기간이 아닙니다!";
+        String str_endingForWinner = "앞으로도 많은 스탬프를 남겨 1등을 지키시길 바라요!🥰";
+        String str_endingForLoser = "더 많은 스탬프를 남겨 1등을 탈환하길 바라요!🥰";
+
+        return tmp(
+                weekNum,
+                str_standard,
+                str_errorForWeekNum,
+                str_endingForWinner,
+                str_endingForLoser,
+                kakaoId);
+    }
+
+    private String tmp(int weekNum,
+                       String str_standard,
+                       String str_errorForWeekNum,
+                       String str_endingForWinner,
+                       String str_endingForLoser,
+                       String kakaoId) {
+
+        int myStampCount;
+        String returnFormat = weekNum + "주차 랭킹"
+                + str_standard
+                + "\n==========\n";
+
+        List<UserDto.Rank> top1ForThisWeek =
+                stampService.getTop1ForThisWeek(weekNum);
+
+        for (UserDto.Rank top : top1ForThisWeek) {
+            // TODO - 이거 진짜 1개만 나오는지 확인할 것
+            // 1등인 경우
+            int secondCount;
+            if (top.getKakaoId().equals(kakaoId)) {
+                // TODO - 2등 몇개인지 찾기 기능은 ... 일단 미뤄두기
+                if (weekNum == 1) {
+                    myStampCount = top.getWeek1();
+                    List<Integer> tmp = new ArrayList<>(
+                            userRepository.findAllByOrderByWeek1Desc()
+                                    .stream()
+                                    .map(Users::getWeek1)
+                                    .collect(Collectors.toSet()));
+                    secondCount = tmp.get(1);
+                } else if (weekNum == 2) {
+                    myStampCount = top.getWeek2();
+
+                    LinkedHashSet<Integer> uniqueSet = new LinkedHashSet<>(
+                            userRepository.findAllByOrderByWeek2Desc()
+                                    .stream()
+                                    .map(Users::getWeek2)
+                                    .collect(Collectors.toList()));
+                    Iterator<Integer> iterator = uniqueSet.iterator();
+                    iterator.next(); // 첫 번째 요소 건너뛰기
+                    secondCount = iterator.next();
+//                    log.info(tmp.get(0).toString());
+                } else if (weekNum == 3) {
+                    myStampCount = top.getWeek3();
+                    List<Integer> tmp = new ArrayList<>(
+                            userRepository.findAllByOrderByWeek3Desc()
+                                    .stream()
+                                    .map(Users::getWeek3)
+                                    .collect(Collectors.toSet()));
+                    secondCount = tmp.get(1);
+                } else if (weekNum == 4) {
+                    myStampCount = top.getWeek4();
+                    List<Integer> tmp = new ArrayList<>(
+                            userRepository.findAllByOrderByWeek4Desc()
+                                    .stream()
+                                    .map(Users::getWeek4)
+                                    .collect(Collectors.toSet()));
+                    secondCount = tmp.get(1);
+                } else return str_errorForWeekNum;
+
+                returnFormat += "축하드립니다! 총 스탬프 " + myStampCount + "개로 1등입니다." +
+                        "\n현재 2등의 개수는 🤫" + secondCount + "개!🤫"
+                        + "\n\n" + str_endingForWinner;
+                return returnFormat;
+            }
+        }
+
+        // 1등 아닌 경우
+        int inFrontOfMe = 0;
+        if (weekNum == 1) {
+            myStampCount = getUser(kakaoId).getWeek1();
+            List<Users> usersList = userRepository.findAllByOrderByWeek1Desc();
+            for (Users users : usersList)
+                if (users.getKakaoId().equals(kakaoId)) break;
+                else inFrontOfMe += 1;
+        } else if (weekNum == 2) {
+            myStampCount = getUser(kakaoId).getWeek2();
+            List<Users> usersList = userRepository.findAllByOrderByWeek2Desc();
+            for (Users users : usersList)
+                if (users.getKakaoId().equals(kakaoId)) break;
+                else inFrontOfMe += 1;
+        } else if (weekNum == 3) {
+            myStampCount = getUser(kakaoId).getWeek3();
+            List<Users> usersList = userRepository.findAllByOrderByWeek3Desc();
+            for (Users users : usersList)
+                if (users.getKakaoId().equals(kakaoId)) break;
+                else inFrontOfMe += 1;
+        } else if (weekNum == 4) {
+            myStampCount = getUser(kakaoId).getWeek4();
+            List<Users> usersList = userRepository.findAllByOrderByWeek4Desc();
+            for (Users users : usersList)
+                if (users.getKakaoId().equals(kakaoId)) break;
+                else inFrontOfMe += 1;
+        } else return str_errorForWeekNum;
+
+
+        returnFormat += "현재 " + getUser(kakaoId).getUsername() + "님 앞에 🤫"
+                + inFrontOfMe + " 명이 있어요...!🤫"
+                + "\n(내 스탬프 개수 : " + myStampCount + "개)"
+                + "\n\n" + str_endingForLoser;
         return returnFormat;
     }
 
