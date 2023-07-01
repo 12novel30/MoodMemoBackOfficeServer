@@ -23,4 +23,6 @@ public class DailyReport {
     private String keyword2nd;
     private String keyword3rd;
     private String time;
+    private Integer updateByDevCnt;
+    private Integer updateByUserCnt;
 }

@@ -1,5 +1,6 @@
 package com.moodmemo.office.service;
 
+import com.moodmemo.office.code.OfficeCode;
 import com.moodmemo.office.domain.DailyReport;
 import com.moodmemo.office.dto.DailyReportDto;
 import com.moodmemo.office.exception.OfficeException;
@@ -14,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
+import static com.moodmemo.office.code.OfficeCode.DEV;
+import static com.moodmemo.office.code.OfficeCode.USER;
 import static com.moodmemo.office.code.OfficeErrorCode.NO_DR;
 import static com.moodmemo.office.code.OfficeErrorCode.NO_USER;
 
@@ -28,15 +31,17 @@ public class DailyReportService {
     public HttpStatus upsertDailyReport(DailyReportDto.Response dr) {
         // save
         DailyReport dailyReport = DailyReport.builder().build();
-
         if (dailyReportRepository
                 .findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate())
                 .isPresent()) { // update
             dailyReport = dailyReportRepository
                     .findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate()).get();
-        }
+        } else // save
+            dailyReport.setUpdateByDevCnt(-1); // updateDailyReportEntity 에서 +1 -> 0
 
-        return updateDailyReportEntity(dr, dailyReport);
+        dailyReport.setUpdateByUserCnt(0);
+
+        return updateDailyReportEntity(dr, dailyReport, DEV);
     }
 
     @Transactional
@@ -45,12 +50,14 @@ public class DailyReportService {
                 dr,
                 dailyReportRepository
                         .findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate())
-                        .orElseThrow(() -> new OfficeException(NO_DR)));
+                        .orElseThrow(() -> new OfficeException(NO_DR)),
+                USER);
     }
 
     @Transactional
     private HttpStatus updateDailyReportEntity(DailyReportDto.Response dr,
-                                               DailyReport dailyReport) {
+                                               DailyReport dailyReport,
+                                               OfficeCode who) {
         // username 채우기
         if (dailyReport.getUsername() == null) {
             dailyReport.setUsername(
@@ -75,6 +82,11 @@ public class DailyReportService {
             dailyReport.setKeyword3rd(dr.getKeyword3rd());
         if (dr.getTime() != null)
             dailyReport.setTime(dr.getTime());
+
+        if (who.equals(DEV))
+            dailyReport.setUpdateByDevCnt(dailyReport.getUpdateByDevCnt() + 1);
+        else // USER
+            dailyReport.setUpdateByUserCnt(dailyReport.getUpdateByUserCnt() + 1);
 
         return ResponseEntity.ok(dailyReportRepository.save(dailyReport))
                 .getStatusCode();

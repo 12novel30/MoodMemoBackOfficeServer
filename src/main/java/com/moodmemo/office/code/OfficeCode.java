@@ -8,6 +8,8 @@ import lombok.Getter;
 public enum OfficeCode {
     STARTDATE_TAIL(" 23:59:59"),
     ENDDATE_TAIL(" 00:00:00"),
+    DEV("dev"),
+    USER("user"),
 
     // 남자는 true
     // 여자는 false
