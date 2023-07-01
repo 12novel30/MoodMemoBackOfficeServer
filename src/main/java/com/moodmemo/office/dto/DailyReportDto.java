@@ -27,6 +27,7 @@ public class DailyReportDto {
     @NoArgsConstructor
     @Builder
     public static class Response {
+        private String ｉd;
         private String kakaoId;
         private String username;
         private LocalDate date;

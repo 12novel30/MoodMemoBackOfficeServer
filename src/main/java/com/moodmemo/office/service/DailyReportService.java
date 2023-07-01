@@ -26,14 +26,32 @@ public class DailyReportService {
 
     @Transactional
     public HttpStatus upsertDailyReport(DailyReportDto.Response dr) {
+        // save
         DailyReport dailyReport = DailyReport.builder().build();
 
         if (dailyReportRepository
                 .findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate())
-                .isPresent()) {
+                .isPresent()) { // update
             dailyReport = dailyReportRepository
                     .findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate()).get();
         }
+
+        return updateDailyReportEntity(dr, dailyReport);
+    }
+
+    @Transactional
+    public HttpStatus updateDailyReport(DailyReportDto.Response dr) {
+        return updateDailyReportEntity(
+                dr,
+                dailyReportRepository
+                        .findByKakaoIdAndDate(dr.getKakaoId(), dr.getDate())
+                        .orElseThrow(() -> new OfficeException(NO_DR)));
+    }
+
+    @Transactional
+    private HttpStatus updateDailyReportEntity(DailyReportDto.Response dr,
+                                               DailyReport dailyReport) {
+        // username 채우기
         if (dailyReport.getUsername() == null) {
             dailyReport.setUsername(
                     userRepository.findByKakaoId(dr.getKakaoId())
@@ -74,9 +92,9 @@ public class DailyReportService {
     }
 
     @Transactional(readOnly = true)
-    public DailyReportDto.Response getDailyReportDBVersionToUser(String id, LocalDate date) {
+    public DailyReportDto.Response getDailyReportDBVersionToUser(String kakaoId, LocalDate date) {
         return getDailyReportDBVersion(
-                userRepository.findById(id)
+                userRepository.findByKakaoId(kakaoId)
                         .orElseThrow(() -> new OfficeException(NO_USER))
                         .getKakaoId(),
                 date);

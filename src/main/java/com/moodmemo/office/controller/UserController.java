@@ -17,19 +17,19 @@ import java.time.LocalDate;
 public class UserController {
     private final DailyReportService dailyReportService;
 
-    @GetMapping(value = "/dailyReport/user/{id}/{date}",
-            produces = "application/json;charset=UTF-8") // TODO - 로그 찍어야 함
+    @GetMapping(value = "/dailyReport/user/{kakaoId}/{date}",
+            produces = "application/json;charset=UTF-8")
     public DailyReportDto.Response getDailyReportToUser(
             @PathVariable(value = "date") final String date,
-            @PathVariable(value = "id") final String id) {
+            @PathVariable(value = "kakaoId") final String kakaoId) {
         // 자정이 넘은 뒤, 어제의 DR 을 가져오는 것으로 생각함.
         return dailyReportService.getDailyReportDBVersionToUser(
-                id, LocalDate.parse(date));
+                kakaoId, LocalDate.parse(date));
     }
 
-    @PostMapping(value = "/dailyReport/user",
-            produces = "application/json;charset=UTF-8") // TODO - 로그 찍어야 함
-    public HttpStatus upsertDailyReportByUser(@RequestBody DailyReportDto.Response dr) {
-        return dailyReportService.upsertDailyReport(dr);
+    @PutMapping(value = "/dailyReport/user",
+            produces = "application/json;charset=UTF-8")
+    public HttpStatus updateDailyReportByUser(@RequestBody DailyReportDto.Response dr) {
+        return dailyReportService.updateDailyReport(dr);
     }
 }

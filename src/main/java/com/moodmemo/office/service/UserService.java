@@ -14,7 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.moodmemo.office.code.KakaoCode.EVENT_WEEK1_GIFT_SEND_DAY;
@@ -169,43 +172,30 @@ public class UserService {
             // 1등인 경우
             int secondCount;
             if (top.getKakaoId().equals(kakaoId)) {
-                // TODO - 2등 몇개인지 찾기 기능은 ... 일단 미뤄두기
                 if (weekNum == 1) {
                     myStampCount = top.getWeek1();
-                    List<Integer> tmp = new ArrayList<>(
-                            userRepository.findAllByOrderByWeek1Desc()
-                                    .stream()
-                                    .map(Users::getWeek1)
-                                    .collect(Collectors.toSet()));
-                    secondCount = tmp.get(1);
+                    secondCount = getSecondPlayerCount(userRepository.findAllByOrderByWeek1Desc()
+                            .stream()
+                            .map(Users::getWeek1)
+                            .collect(Collectors.toList()));
                 } else if (weekNum == 2) {
                     myStampCount = top.getWeek2();
-
-                    LinkedHashSet<Integer> uniqueSet = new LinkedHashSet<>(
-                            userRepository.findAllByOrderByWeek2Desc()
-                                    .stream()
-                                    .map(Users::getWeek2)
-                                    .collect(Collectors.toList()));
-                    Iterator<Integer> iterator = uniqueSet.iterator();
-                    iterator.next(); // 첫 번째 요소 건너뛰기
-                    secondCount = iterator.next();
-//                    log.info(tmp.get(0).toString());
+                    secondCount = getSecondPlayerCount(userRepository.findAllByOrderByWeek2Desc()
+                            .stream()
+                            .map(Users::getWeek2)
+                            .collect(Collectors.toList()));
                 } else if (weekNum == 3) {
                     myStampCount = top.getWeek3();
-                    List<Integer> tmp = new ArrayList<>(
-                            userRepository.findAllByOrderByWeek3Desc()
-                                    .stream()
-                                    .map(Users::getWeek3)
-                                    .collect(Collectors.toSet()));
-                    secondCount = tmp.get(1);
+                    secondCount = getSecondPlayerCount(userRepository.findAllByOrderByWeek3Desc()
+                            .stream()
+                            .map(Users::getWeek3)
+                            .collect(Collectors.toList()));
                 } else if (weekNum == 4) {
                     myStampCount = top.getWeek4();
-                    List<Integer> tmp = new ArrayList<>(
-                            userRepository.findAllByOrderByWeek4Desc()
-                                    .stream()
-                                    .map(Users::getWeek4)
-                                    .collect(Collectors.toSet()));
-                    secondCount = tmp.get(1);
+                    secondCount = getSecondPlayerCount(userRepository.findAllByOrderByWeek4Desc()
+                            .stream()
+                            .map(Users::getWeek4)
+                            .collect(Collectors.toList()));
                 } else return str_errorForWeekNum;
 
                 returnFormat += "축하드립니다! 총 스탬프 " + myStampCount + "개로 1등입니다." +
@@ -249,6 +239,13 @@ public class UserService {
                 + "\n(내 스탬프 개수 : " + myStampCount + "개)"
                 + "\n\n" + str_endingForLoser;
         return returnFormat;
+    }
+
+    private int getSecondPlayerCount(List<Integer> orderedUserList) {
+        LinkedHashSet<Integer> linkedSet = new LinkedHashSet<>(orderedUserList);
+        Iterator<Integer> iterator = linkedSet.iterator();
+        iterator.next(); // 첫 번째 요소 건너뛰기
+        return iterator.next();
     }
 
     public String getMyRanking(String kakaoId) {
