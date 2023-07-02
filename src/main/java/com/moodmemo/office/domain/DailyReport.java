@@ -25,4 +25,5 @@ public class DailyReport {
     private String time;
     private Integer updateByDevCnt;
     private Integer updateByUserCnt;
+    private Integer likeCnt;
 }

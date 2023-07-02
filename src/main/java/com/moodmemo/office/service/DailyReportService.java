@@ -5,6 +5,7 @@ import com.moodmemo.office.domain.DailyReport;
 import com.moodmemo.office.dto.DailyReportDto;
 import com.moodmemo.office.exception.OfficeException;
 import com.moodmemo.office.repository.DailyReportRepository;
+import com.moodmemo.office.repository.StampRepository;
 import com.moodmemo.office.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import static com.moodmemo.office.code.OfficeErrorCode.NO_USER;
 @Slf4j
 @RequiredArgsConstructor
 public class DailyReportService {
+    private final StampRepository stampRepository;
     private final DailyReportRepository dailyReportRepository;
     private final UserRepository userRepository;
 
@@ -40,6 +42,7 @@ public class DailyReportService {
             dailyReport.setUpdateByDevCnt(-1); // updateDailyReportEntity 에서 +1 -> 0
 
         dailyReport.setUpdateByUserCnt(0);
+        dailyReport.setLikeCnt(0); // add like button
 
         return updateDailyReportEntity(dr, dailyReport, DEV);
     }
@@ -111,4 +114,18 @@ public class DailyReportService {
                         .getKakaoId(),
                 date);
     }
+
+    public HttpStatus updateLikeCnt(DailyReportDto.Simple simple) {
+        DailyReport dailyReport = dailyReportRepository.findByKakaoIdAndDate(
+                        simple.getKakaoId(),
+                        LocalDate.parse(simple.getDate()))
+                .orElseThrow(() -> new OfficeException(NO_DR));
+        if (dailyReport.getLikeCnt() != null)
+            dailyReport.setLikeCnt(dailyReport.getLikeCnt() + 1);
+        else dailyReport.setLikeCnt(1);
+
+        return ResponseEntity.ok(dailyReportRepository.save(dailyReport))
+                .getStatusCode();
+    }
+
 }

@@ -32,4 +32,10 @@ public class UserController {
     public HttpStatus updateDailyReportByUser(@RequestBody DailyReportDto.Response dr) {
         return dailyReportService.updateDailyReport(dr);
     }
+
+    @PutMapping(value = "/dailyReport/like",
+            produces = "application/json;charset=UTF-8")
+    public HttpStatus updateLikeCnt(@RequestBody DailyReportDto.Simple simple) {
+        return dailyReportService.updateLikeCnt(simple);
+    }
 }

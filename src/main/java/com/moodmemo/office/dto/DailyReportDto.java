@@ -21,6 +21,15 @@ public class DailyReportDto {
         private List<Stamps> todayStampList;
 
     }
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Simple {
+        private String kakaoId;
+        private String date; // like 2023-06-30
+
+    }
 
     @Getter
     @AllArgsConstructor
