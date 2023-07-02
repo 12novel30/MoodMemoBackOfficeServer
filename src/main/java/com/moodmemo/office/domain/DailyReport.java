@@ -5,16 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @Builder
 @Document(collection = "dailyReport")
 public class DailyReport {
-    private String id;
+    private String id; // TODO - userId ? dailyReportId ? -> 구분할 것
     private String kakaoId;
     private String username;
     private LocalDateTime date;

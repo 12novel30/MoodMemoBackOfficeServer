@@ -34,7 +34,7 @@ public class BackOfficeController {
 
     @GetMapping(value = "/dailyReport/{kakaoId}",
             produces = "application/json;charset=UTF-8")
-    public DailyReportDto.Response getDailyReport(
+    public DailyReportDto.Response getDailyReportFromAI(
             @PathVariable final String kakaoId) {
         // 새벽 3시 이후, "어제" 03:00 ~ 오늘 02:59 사이의 스탬프리스트를 가져온다.
         return stampService.createDailyReport(
