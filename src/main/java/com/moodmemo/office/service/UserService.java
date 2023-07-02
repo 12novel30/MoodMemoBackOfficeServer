@@ -28,12 +28,15 @@ import static com.moodmemo.office.code.OfficeErrorCode.NO_USER;
 @RequiredArgsConstructor
 public class UserService {
     private final StampRepository stampRepository;
-
     private final UserRepository userRepository;
     private final StampService stampService;
 
-    public UserDto.Response createUser(UserDto.Dummy request) {
+    private final DateTimeFormatter rankToBotFormat =
+            DateTimeFormatter.ofPattern("MM/dd HH:mm");
+    private final DateTimeFormatter drDateFormat =
+            DateTimeFormatter.ofPattern("YYYY-MM-dd");
 
+    public UserDto.Response createUser(UserDto.Dummy request) {
         return UserDto.Response.fromDocuments(
                 userRepository.save(
                         Users.builder()
@@ -44,7 +47,6 @@ public class UserService {
                                 .gender(request.isGender())
                                 .build())
         );
-
     }
 
     @Transactional(readOnly = true)
@@ -57,6 +59,7 @@ public class UserService {
 
     public void updateWeekCount(String kakaoId, int weekNum, int cnt) {
         Users user = getUser(kakaoId);
+
         if (weekNum == 1)
             user.setWeek1(user.getWeek1() + cnt);
         else if (weekNum == 2)
@@ -73,9 +76,6 @@ public class UserService {
         return userRepository.findByKakaoId(kakaoId)
                 .orElseThrow(() -> new OfficeException(NO_USER));
     }
-
-    private final DateTimeFormatter rankToBotFormat =
-            DateTimeFormatter.ofPattern("MM/dd HH:mm");
 
     private String getAboutRankingFormat(int weekNum,
                                          String str_standard,
@@ -315,8 +315,9 @@ public class UserService {
     }
 
     public String getUserDRYesterday(String kakaoId, LocalDate date) {
+        // 어제의 스탬프가 2개 이상일 때에만 일기 생성
         if (getStampCount(kakaoId, date) >= 2) {
-            String strDate = date.format(DateTimeFormatter.ofPattern("YYYY-MM-dd"));
+            String strDate = date.format(drDateFormat);
             return "🔔데일리 레포트 완성🔔" +
                     "\n\nMoodMemo AI가 " + strDate + "의 일기를 완성했어요🎉" +
                     "\n아래 링크를 클릭하시면 확인 및 수정하실 수 있답니다😀" +
@@ -330,12 +331,15 @@ public class UserService {
                 "\n오늘은 하루 2개 이상의 let을 남기고 AI 일기를 받아보세요!";
     }
 
+    @Transactional(readOnly = true)
     private int getStampCount(String kakaoId, LocalDate date) {
-        List<LocalDateTime> timeRange = stampService.getTimeRangeByOneDay(date);
+        List<LocalDateTime> timeRange =
+                stampService.getTimeRangeByOneDay(date);
         return stampRepository.countByKakaoIdAndDateTimeBetween(
                 kakaoId, timeRange.get(0), timeRange.get(1));
     }
 
+    @Transactional(readOnly = true)
     public List<StampDto.Office> getUserStampAndLet(
             String kakaoId, LocalDate date) {
         List<LocalDateTime> timeRange = stampService.getTimeRangeByOneDay(date);
@@ -346,6 +350,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Users> getuserEntityAll() {
         return userRepository.findAll();
     }

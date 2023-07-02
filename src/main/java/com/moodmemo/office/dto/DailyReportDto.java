@@ -27,7 +27,7 @@ public class DailyReportDto {
     @NoArgsConstructor
     @Builder
     public static class Response {
-        private String ｉd;
+        private String id;
         private String kakaoId;
         private String username;
         private LocalDate date;
@@ -39,6 +39,7 @@ public class DailyReportDto {
 
         public static Response fromDocument(DailyReport dailyReport) {
             return Response.builder()
+                    .id(dailyReport.getId())
                     .kakaoId(dailyReport.getKakaoId())
                     .username(dailyReport.getUsername())
                     .date(dailyReport.getDate().toLocalDate())
