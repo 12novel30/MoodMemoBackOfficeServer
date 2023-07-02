@@ -21,12 +21,14 @@ public class UserDto {
     @NoArgsConstructor
     @Builder
     public static class StampCount {
+        private String id;
         private String kakaoId;
         private String username;
         @Setter
         private int stampCount;
         public static StampCount fromDocuments(Users user) {
             return StampCount.builder()
+                    .id(user.getId())
                     .kakaoId(user.getKakaoId())
                     .username(user.getUsername())
                     .build();
