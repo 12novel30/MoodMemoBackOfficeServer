@@ -96,6 +96,26 @@ public class KakaoService {
                 .build();
     }
 
+    public StampDto.Dummy getStampWithImageParams(Map<String, Object> params) throws JsonProcessingException {
+        Map<String, Object> action_params = getParamsFromAction(params);
+
+        // get stamp from params
+        String stamp = getParamFromDetailParams(params, PARAMS_EMOTION.getDescription());
+        stamp = stamp.substring(1, stamp.length() - 1);
+
+        // get imageUrl from params
+        String imageUrl = getParamFromDetailParams(params, "imageUrl");
+        imageUrl = imageUrl.substring(1, imageUrl.length() - 1);
+
+        return StampDto.Dummy.builder()
+                .kakaoId(getKakaoIdParams(params))
+                .dateTime(LocalDateTime.now())
+                .stamp(stamp)
+                .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
+                .imageUrl(imageUrl)
+                .build();
+    }
+
     public UserDto.Dummy getInfoParams(Map<String, Object> params) throws JsonProcessingException {
 
         Map<String, Object> action_params = getParamsFromAction(params);
@@ -270,8 +290,8 @@ public class KakaoService {
     }
 
     public void deleteStamp(Map<String, Object> params,
-                                  String sys_time,
-                                  LocalDate nowDate) throws JsonProcessingException {
+                            String sys_time,
+                            LocalDate nowDate) throws JsonProcessingException {
         String kakaoId = getKakaoIdParams(params);
 
         Stamps targetStamp = getStampByTime(kakaoId, sys_time, nowDate);

@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.service.KakaoService;
+import com.moodmemo.office.service.S3UploaderService;
 import com.moodmemo.office.service.StampService;
 import com.moodmemo.office.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +31,7 @@ public class SkillController {
     private final KakaoService kakaoService;
     private final StampService stampService;
     private final UserService userService;
+    private final S3UploaderService s3UploaderService;
 
     @PostMapping("/userInfo")
     public HashMap<String, Object> callUserInfoAPI(
@@ -250,6 +253,50 @@ public class SkillController {
 
         return kakaoService.getStringObjectHashMap("스탬프 삭제 발화리턴");
     }
+
+
+    @PostMapping("/image")
+    public HashMap<String, Object> callStampWithImageAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+        // parameter logging
+        log.info(kakaoService.getParameterToString(params));
+
+        // save stamp - 일단 시간 변경은 안했다고 가정
+        // todo - 시간 변경이 되었다면, if null 처리하기
+        String kakaoId = stampService.createStamp(
+                kakaoService.getStampWithImageParams(params)).getKakaoId();
+
+        // todo - download file from image url (kakao)
+        // todo - save image file to S3
+        // todo - save image url (kakao -> s3 change) to DB
+
+//        Map<String, Object> action_params = getParamsFromAction(params);
+//        targetStamp.setMemoLet(action_params.get("edit_memolet").toString());
+
+//        String objectURL = s3UploaderService.upload(file, "office");
+//        System.out.println(objectURL);
+//        return ResponseEntity.ok(userservice.updateUserImage(userId, objectURL));
+
+
+
+
+
+
+        // update week n 의 스탬프 개수
+        userService.updateWeekCount(kakaoId, stampService.validateWeek(), 1);
+
+        return kakaoService.getStringObjectHashMap("사진 입력 버전 memolet 발화리턴");
+    }
+
+//    @PutMapping("/{userId}/updateUserImage")
+//    public HashMap<String, Object> uploadUserImage(@PathVariable int userId,
+//                                                   @RequestPart(value = "file", required = false) MultipartFile file)
+//            throws IOException {
+//        String objectURL = s3UploaderService.upload(file, "test");
+//        System.out.println(objectURL);
+//        return ResponseEntity.ok(userservice.updateUserImage(userId, objectURL));
+//    }
 
 
     /*----------아래는 예제 코드----------*/

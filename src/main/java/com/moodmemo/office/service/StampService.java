@@ -31,14 +31,16 @@ public class StampService {
     private final AIService aiService;
 
     public StampDto.Response createStamp(StampDto.Dummy request) {
-        return StampDto.Response.fromDocument(
-                stampRepository.save(
-                        Stamps.builder()
-                                .kakaoId(request.getKakaoId())
-                                .dateTime(request.getDateTime())
-                                .stamp(request.getStamp())
-                                .memoLet(request.getMemoLet())
-                                .build())
+        Stamps stamp = Stamps.builder()
+                .kakaoId(request.getKakaoId())
+                .dateTime(request.getDateTime())
+                .stamp(request.getStamp())
+                .memoLet(request.getMemoLet())
+                .build();
+        if (request.getImageUrl() != null) {
+            stamp.setImageUrl(request.getImageUrl());
+        }
+        return StampDto.Response.fromDocument(stampRepository.save(stamp)
         );
 
     }
@@ -103,10 +105,6 @@ public class StampService {
     private static boolean validateIsInWeekRange(List<LocalDate> week, LocalDate today) {
 
 
-
-
-
-        
         return (today.isAfter(week.get(0)) && today.isBefore(week.get(1)))
                 || today.isEqual(week.get(0))
                 || today.isEqual(week.get(1));
