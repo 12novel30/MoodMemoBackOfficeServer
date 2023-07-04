@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -258,7 +259,7 @@ public class SkillController {
     @PostMapping("/image")
     public HashMap<String, Object> callStampWithImageAPI(
             @Valid @RequestBody Map<String, Object> params)
-            throws JsonProcessingException {
+            throws JsonProcessingException, MalformedURLException {
         // parameter logging
         log.info(kakaoService.getParameterToString(params));
 
@@ -267,9 +268,7 @@ public class SkillController {
         String kakaoId = stampService.createStamp(
                 kakaoService.getStampWithImageParams(params)).getKakaoId();
 
-        // todo - download file from image url (kakao)
-        // todo - save image file to S3
-        // todo - save image url (kakao -> s3 change) to DB
+
 
 //        Map<String, Object> action_params = getParamsFromAction(params);
 //        targetStamp.setMemoLet(action_params.get("edit_memolet").toString());
@@ -288,15 +287,6 @@ public class SkillController {
 
         return kakaoService.getStringObjectHashMap("사진 입력 버전 memolet 발화리턴");
     }
-
-//    @PutMapping("/{userId}/updateUserImage")
-//    public HashMap<String, Object> uploadUserImage(@PathVariable int userId,
-//                                                   @RequestPart(value = "file", required = false) MultipartFile file)
-//            throws IOException {
-//        String objectURL = s3UploaderService.upload(file, "test");
-//        System.out.println(objectURL);
-//        return ResponseEntity.ok(userservice.updateUserImage(userId, objectURL));
-//    }
 
 
     /*----------아래는 예제 코드----------*/

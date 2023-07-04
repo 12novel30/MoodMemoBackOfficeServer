@@ -13,7 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -21,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.moodmemo.office.code.KakaoCode.*;
+import static com.moodmemo.office.code.OfficeCode.SEASON_3_FOLDER;
 import static com.moodmemo.office.code.OfficeErrorCode.NO_STAMP;
 
 @Service
@@ -30,6 +37,7 @@ public class KakaoService {
     private final StampRepository stampRepository;
     private final UserService userService;
     private final StampService stampService;
+    private final S3UploaderService s3UploaderService;
 
     public static HashMap<String, Object> getStringObjectHashMap(String showText) {
         HashMap<String, Object> resultJson = new HashMap<>();
@@ -96,7 +104,7 @@ public class KakaoService {
                 .build();
     }
 
-    public StampDto.Dummy getStampWithImageParams(Map<String, Object> params) throws JsonProcessingException {
+    public StampDto.Dummy getStampWithImageParams(Map<String, Object> params) throws JsonProcessingException, MalformedURLException {
         Map<String, Object> action_params = getParamsFromAction(params);
 
         // get stamp from params
@@ -104,15 +112,55 @@ public class KakaoService {
         stamp = stamp.substring(1, stamp.length() - 1);
 
         // get imageUrl from params
-        String imageUrl = getParamFromDetailParams(params, "imageUrl");
-        imageUrl = imageUrl.substring(1, imageUrl.length() - 1);
+        String kakaoImageUrl = getParamFromDetailParams(params, "imageUrl");
+        kakaoImageUrl = kakaoImageUrl.substring(1, kakaoImageUrl.length() - 1);
 
+
+
+
+
+        // todo - download file from image url (kakao)
+
+//        // create method that convert URL to  MultipartFile
+//        URL url = new URL(kakaoImageUrl);
+//        File file = new File(url.getFile());
+
+        String imageURL = "https://blog.kakaocdn.net/dn/VIxFi/btqZqqf3QFS/n2otuLtHQo8TQVOwMAmmbk/img.png";
+
+        try {
+            URL imgURL = new URL(imageURL);
+            String extension = imageURL.substring(imageURL.lastIndexOf(".")+1); // 확장자
+            String fileName = "나를_업로드_해봐"; // 이미지 이름
+
+            BufferedImage image = ImageIO.read(imgURL);
+            File file = new File("myImage/" + fileName + "." + extension);
+            if(!file.exists()) { // 해당 경로의 폴더가 존재하지 않을 경우
+                file.mkdirs(); // 해당 경로의 폴더 생성
+            }
+
+            ImageIO.write(image, extension, file); // image를 file로 업로드
+            System.out.println("이미지 업로드 완료!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        // todo - save image file to S3
+        // todo - save image url (kakao -> s3 change) to DB
+//        return StampDto.Dummy.builder()
+//                .kakaoId(getKakaoIdParams(params))
+//                .dateTime(LocalDateTime.now())
+//                .stamp(stamp)
+//                .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
+//                .imageUrl(s3UploaderService.upload(file, SEASON_3_FOLDER.getDescription()))
+//                .build();
         return StampDto.Dummy.builder()
                 .kakaoId(getKakaoIdParams(params))
                 .dateTime(LocalDateTime.now())
                 .stamp(stamp)
                 .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
-                .imageUrl(imageUrl)
+                .imageUrl(kakaoImageUrl)
                 .build();
     }
 
@@ -298,5 +346,26 @@ public class KakaoService {
         stampRepository.delete(targetStamp);
 
         userService.updateWeekCount(kakaoId, stampService.validateWeek(), -1);
+    }
+
+    public String kakaoImageTest(String imageUrl) {
+
+        // todo - download file from image url (kakao)
+
+        try {
+            URL imgURL = new URL(imageUrl);
+            String fileName = "나를_업로드_해봐"; // 이미지 이름
+            BufferedImage image = ImageIO.read(imgURL);
+            File file = new File("myImage/" + fileName + ".jpg");
+            if(!file.exists()) { // 해당 경로의 폴더가 존재하지 않을 경우
+                file.mkdirs(); // 해당 경로의 폴더 생성
+            }
+
+            ImageIO.write(image, "jpg", file); // image를 file로 업로드
+            System.out.println("이미지 업로드 완료!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return imageUrl;
     }
 }

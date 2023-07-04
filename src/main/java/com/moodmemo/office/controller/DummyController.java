@@ -84,4 +84,9 @@ public class DummyController {
     public String rankTest(@PathVariable final String kakaoId) {
         return userService.tmpRnag(kakaoId);
     }
+
+    @PostMapping("/kakao-image")
+    public String kakaoImage(@RequestBody final String imageUrl) {
+        return kakaoService.kakaoImageTest(imageUrl);
+    }
 }
