@@ -172,7 +172,7 @@ public class KakaoService {
                             + stamp.getStamp() + " : "
                             + stamp.getMemoLet()
                             + "\n";
-        return "오늘 남긴 스탬프리스트입니다!" +
+        return "🥬 오늘 남긴 스탬프들이다무! 🥬" +
                 "\n" + "=========="
                 + "\n" + stampListText;
     }

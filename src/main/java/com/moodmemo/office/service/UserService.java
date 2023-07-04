@@ -139,9 +139,9 @@ public class UserService {
         String str_standard = " ("
                 + LocalDateTime.now().format(rankToBotFormat)
                 + " 기준)";
-        String str_errorForWeekNum = "현재는 이벤트 기간이 아닙니다!";
-        String str_endingForWinner = "앞으로도 많은 스탬프를 남겨 1등을 지키시길 바라요!🥰";
-        String str_endingForLoser = "더 많은 스탬프를 남겨 1등을 탈환하길 바라요!🥰";
+        String str_errorForWeekNum = "지금은 이벤트 기간이 아니다무!";
+        String str_endingForWinner = "앞으로도 스탬프 많이 남겨서 1등을 지키길 바란다무!✨";
+        String str_endingForLoser = "스탬프 더 많이 남겨서 1등 탈환하길 바란다무!🔥";
 
         return tmp(
                 weekNum,
@@ -160,8 +160,8 @@ public class UserService {
                        String kakaoId) {
 
         int myStampCount;
-        String returnFormat = weekNum + "주차 랭킹"
-                + str_standard
+        String returnFormat = "🥬 " + weekNum + "주차 랭킹"
+                + str_standard + " 🥬"
                 + "\n==========\n";
 
         List<UserDto.Rank> top1ForThisWeek =
@@ -198,7 +198,7 @@ public class UserService {
                             .collect(Collectors.toList()));
                 } else return str_errorForWeekNum;
 
-                returnFormat += "축하드립니다! 총 스탬프 " + myStampCount + "개로 1등입니다." +
+                returnFormat += "축하한다무! 총 스탬프 " + myStampCount + "개로 1등이다무." +
                         "\n현재 2등의 개수는 🤫" + secondCount + "개!🤫"
                         + "\n\n" + str_endingForWinner;
                 return returnFormat;
@@ -234,8 +234,8 @@ public class UserService {
         } else return str_errorForWeekNum;
 
 
-        returnFormat += "현재 " + getUser(kakaoId).getUsername() + "님 앞에 🤫"
-                + inFrontOfMe + " 명이 있어요...!🤫"
+        returnFormat += "현재 " + getUser(kakaoId).getUsername() + "님 앞에 👀"
+                + inFrontOfMe + " 명이 있다무...!👀"
                 + "\n(내 스탬프 개수 : " + myStampCount + "개)"
                 + "\n\n" + str_endingForLoser;
         return returnFormat;
@@ -318,17 +318,15 @@ public class UserService {
         // 어제의 스탬프가 2개 이상일 때에만 일기 생성
         if (getStampCount(kakaoId, date) >= 2) {
             String strDate = date.format(drDateFormat);
-            return "🔔데일리 레포트 완성🔔" +
-                    "\n\nMoodMemo AI가 " + strDate + "의 일기를 완성했어요🎉" +
-                    "\n아래 링크를 클릭하시면 확인 및 수정하실 수 있답니다😀" +
+            return "🥬 Moo가 데일리 레포트 완성했다무! 🥬" +
+                    "\n\n" + strDate + "의 일기는" +
+                    "\n아래 링크를 클릭하면 확인 & 수정할 수 있다무 ✨" +
                     "\n\n링크: " +
                     "http://3.34.55.218/dailyReport/" +
                     getUser(kakaoId).getId() + "/" +
                     strDate;
-        } else return "🔔데일리 레포트 미완성🔔" +
-                "\n\n어제 남겨주신 let의 개수가 2개 미만이라" +
-                "\nMoodMemo AI가 일기를 만들어드리지 못했어요..." +
-                "\n오늘은 하루 2개 이상의 let을 남기고 AI 일기를 받아보세요!";
+        } else return "🥬 : 어제 일기는 못 만들었다무.. 💦" +
+                "\n오늘은 스탬프 2개 이상 남겨줘라무 !";
     }
 
     @Transactional(readOnly = true)
