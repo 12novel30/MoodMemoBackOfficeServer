@@ -324,8 +324,10 @@ public class UserService {
                     "\n아래 링크를 클릭하면 확인 & 수정할 수 있다무 ✨" +
                     "\n\n링크: " +
                     "http://3.34.55.218/dailyReport/" +
-                    getUser(kakaoId).getId() + "/" +
-                    strDate;
+                    getUser(kakaoId).getKakaoId()
+//                            .getId() // TODO - 나중에 변경 일단 kakaoid로
+//                    + "/" + strDate
+                    ;
         } else return "🥬 : 어제 일기는 못 만들었다무.. 💦" +
                 "\n오늘은 스탬프 2개 이상 남겨줘라무 !";
     }

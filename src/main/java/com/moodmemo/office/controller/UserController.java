@@ -17,14 +17,14 @@ import java.time.LocalDate;
 public class UserController {
     private final DailyReportService dailyReportService;
 
-    @GetMapping(value = "/dailyReport/user/{kakaoId}/{date}",
+    @GetMapping(value = "/dailyReport/user/{kakaoId}",
             produces = "application/json;charset=UTF-8")
     public DailyReportDto.Response getDailyReportToUser(
-            @PathVariable(value = "date") final String date,
+//            @PathVariable(value = "date") final String date, // TODO - 일정 바꾸도록 date 받기
             @PathVariable(value = "kakaoId") final String kakaoId) {
         // 자정이 넘은 뒤, 어제의 DR 을 가져오는 것으로 생각함.
         return dailyReportService.getDailyReportDBVersionToUser(
-                kakaoId, LocalDate.parse(date));
+                kakaoId, LocalDate.now().minusDays(1));
     }
 
     @PutMapping(value = "/dailyReport/user",
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/dailyReport/like",
-            produces = "application/json;charset=UTF-8")
+            produces = "application/json;charset=UTF-8") // TODO - 좋아요 이제 만들 예정이랬다
     public HttpStatus updateLikeCnt(@RequestBody DailyReportDto.Simple simple) {
         return dailyReportService.updateLikeCnt(simple);
     }
