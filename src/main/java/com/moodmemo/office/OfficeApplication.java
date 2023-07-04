@@ -2,20 +2,22 @@ package com.moodmemo.office;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableMongoRepositories
 public class OfficeApplication {
+
+//    public static final String APPLICATION_LOCATIONS = "spring.config.location="
+//            + "classpath:application.yml,"
+//            + "classpath:application-s3.yml";
 
     @PostConstruct
     public void started() {
@@ -25,6 +27,9 @@ public class OfficeApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(OfficeApplication.class, args);
+//        new SpringApplicationBuilder(OfficeApplication.class)
+//                .properties(APPLICATION_LOCATIONS)
+//                .run(args);
         System.out.println("fight!");
     }
 
