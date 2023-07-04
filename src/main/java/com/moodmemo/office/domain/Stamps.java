@@ -17,4 +17,5 @@ public class Stamps {
     private LocalDateTime dateTime;
     private String stamp;
     private String memoLet;
+    private String imageUrl;
 }
