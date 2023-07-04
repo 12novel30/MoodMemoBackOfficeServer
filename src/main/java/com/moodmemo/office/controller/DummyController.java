@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.moodmemo.office.code.EventCode.WEEK1;
 
@@ -30,12 +28,10 @@ public class DummyController {
     private final StampService stampService;
     private final KakaoService kakaoService;
 
-    @PostMapping("/add-user")
     public UserDto.Response createUser(@Valid @RequestBody UserDto.Dummy request) {
         return userService.createUser(request);
     }
 
-    @PostMapping("/add-stamp")
     public StampDto.Response createStamp(@Valid @RequestBody StampDto.Dummy request) {
         return stampService.createStamp(request);
     }
