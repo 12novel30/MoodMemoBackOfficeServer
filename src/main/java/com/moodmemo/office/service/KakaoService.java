@@ -13,13 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.moodmemo.office.code.KakaoCode.*;
-import static com.moodmemo.office.code.OfficeCode.SEASON_3_FOLDER;
 import static com.moodmemo.office.code.OfficeErrorCode.NO_STAMP;
 
 @Service
@@ -116,9 +110,6 @@ public class KakaoService {
         kakaoImageUrl = kakaoImageUrl.substring(1, kakaoImageUrl.length() - 1);
 
 
-
-
-
         // todo - download file from image url (kakao)
 
 //        // create method that convert URL to  MultipartFile
@@ -126,24 +117,10 @@ public class KakaoService {
 //        File file = new File(url.getFile());
 
         String imageURL = "https://blog.kakaocdn.net/dn/VIxFi/btqZqqf3QFS/n2otuLtHQo8TQVOwMAmmbk/img.png";
-
-        try {
-            URL imgURL = new URL(imageURL);
-            String extension = imageURL.substring(imageURL.lastIndexOf(".")+1); // 확장자
-            String fileName = "나를_업로드_해봐"; // 이미지 이름
-
-            BufferedImage image = ImageIO.read(imgURL);
-            File file = new File("myImage/" + fileName + "." + extension);
-            if(!file.exists()) { // 해당 경로의 폴더가 존재하지 않을 경우
-                file.mkdirs(); // 해당 경로의 폴더 생성
-            }
-
-            ImageIO.write(image, extension, file); // image를 file로 업로드
-            System.out.println("이미지 업로드 완료!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        s3UploaderService.kakaoImageUrlSaveToLocal(imageURL, "testImageName");
+        // local file to MultipartFile
+//        File file = new File("testImageName");
+//        BufferedImage bufferedImage = ImageIO.read(file);
 
 
         // todo - save image file to S3
@@ -272,23 +249,21 @@ public class KakaoService {
                 kakaoId, localDateTime.minusNanos(1), localDateTime.plusMinutes(1).minusNanos(1));
     }
 
-    private LocalDateTime getLocalDateTimeBy3AM(LocalDate today, LocalTime localTime) {
-        /* if 찾는 시간: 03:00~23:59 ->
-         *   if 바꾸려는 시간: 03:00~23:59 -> -
-         *   if 바꾸려는 시간: 00:00~02:59 -> 어제 날짜에서 찾기
+    private LocalDateTime getLocalDateTimeBy3AM(LocalDate today, LocalTime targetTime) {
+        /* if 찾는 시간: 03:00~23:59 -> 전부 오늘 날짜
          * if 찾는 시간: 00:00~02:59 ->
          *   if 바꾸려는 시간: 03:00~23:59 -> 어제 날짜에서 찾기
          *   if 바꾸려는 시간: 00:00~02:59 -> -
          *
-         * (찾는 시간이 03:00~23:59 사이인가?) == (바꾸려는 시간이 03:00~23:59 사이인가?)
-         * true=(n,n)(y,y) -> 오늘 날짜 그대로!
-         * false=(n,y)(y,n) -> 어제 날짜로!
+         * if (찾는 시간이 03:00~23:59 사이 x?) & (찾는 시간이 03:00~23:59 사이 o?)
+         *      -> 어제 날짜로
+         * else -> 오늘 날짜로
          * */
-        if (validateTimeIs3AMtoMidnight(LocalTime.now())
-                == validateTimeIs3AMtoMidnight(localTime))
-            return LocalDateTime.of(today, localTime);
+        if (!validateTimeIs3AMtoMidnight(LocalTime.now())
+                && validateTimeIs3AMtoMidnight(targetTime))
+            return LocalDateTime.of(today.minusDays(1), targetTime);
         else
-            return LocalDateTime.of(today.minusDays(1), localTime);
+            return LocalDateTime.of(today, targetTime);
     }
 
 
@@ -348,24 +323,5 @@ public class KakaoService {
         userService.updateWeekCount(kakaoId, stampService.validateWeek(), -1);
     }
 
-    public String kakaoImageTest(String imageUrl) {
 
-        // todo - download file from image url (kakao)
-
-        try {
-            URL imgURL = new URL(imageUrl);
-            String fileName = "나를_업로드_해봐"; // 이미지 이름
-            BufferedImage image = ImageIO.read(imgURL);
-            File file = new File("myImage/" + fileName + ".jpg");
-            if(!file.exists()) { // 해당 경로의 폴더가 존재하지 않을 경우
-                file.mkdirs(); // 해당 경로의 폴더 생성
-            }
-
-            ImageIO.write(image, "jpg", file); // image를 file로 업로드
-            System.out.println("이미지 업로드 완료!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return imageUrl;
-    }
 }
