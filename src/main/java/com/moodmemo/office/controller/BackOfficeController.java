@@ -68,9 +68,8 @@ public class BackOfficeController {
                 LocalDate.now().minusDays(1));
     }
 
-    @PostMapping(value = "/dailyReport",
-            produces = "application/json;charset=UTF-8")
     // 사용자가 업데이트 할 때에도 같은 메소드 사용
+    @PostMapping("/dailyReport")
     public HttpStatus upsertDailyReport(@RequestBody DailyReportDto.Response dr) {
         return dailyReportService.upsertDailyReport(dr);
     }
