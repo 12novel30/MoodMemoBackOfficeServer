@@ -11,8 +11,9 @@ public enum OfficeCode {
     DEV("dev"),
     USER("user"),
 
-    // S3 folder name
-    SEASON_3_FOLDER("season3"),
+    LOCAL_FOLDER("tmpImage"),
+    // S3 folder name,
+    SEASON_3_FOLDER("season3")
 
 
     // 남자는 true

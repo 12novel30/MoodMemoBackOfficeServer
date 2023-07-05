@@ -4,13 +4,16 @@ import com.moodmemo.office.domain.Users;
 import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.service.KakaoService;
+import com.moodmemo.office.service.S3UploaderService;
 import com.moodmemo.office.service.StampService;
 import com.moodmemo.office.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -27,6 +30,7 @@ public class DummyController {
     private final UserService userService;
     private final StampService stampService;
     private final KakaoService kakaoService;
+    private final S3UploaderService s3UploaderService;
 
     public UserDto.Response createUser(@Valid @RequestBody UserDto.Dummy request) {
         return userService.createUser(request);
@@ -87,6 +91,15 @@ public class DummyController {
 
     @PostMapping("/kakao-image")
     public String kakaoImage(@RequestBody final String imageUrl) {
-        return kakaoService.kakaoImageTest(imageUrl);
+        return s3UploaderService.kakaoImageUrlSaveToLocal(
+                imageUrl, "testImageName");
+    }
+    @GetMapping("/kakao-image/convert")
+    public MultipartFile kakaoImage2() throws IOException {
+        return s3UploaderService.convertFileToMultipartFile("testImageName");
+    }
+    @DeleteMapping("/kakao-image/delete")
+    public void kakaoImage3() throws IOException {
+        s3UploaderService.deleteLocalImage("testImageName");
     }
 }
