@@ -360,12 +360,14 @@ public class UserService {
 
         ObjectMapper mapper = new ObjectMapper();
         String returnMessage = "📊 MoodMemo 통계 📊\n\n" +
-                "Moo가 그동안 " + getUser(kakaoId).getUsername() + "님이 찍은 스탬프를 정리해왔다무!\n" +
-                "📌 총 " + response.get("total_stamp") + "개의 스탬프를 찍었다무!\n" ;
-        Map stamp_by_emotion = (Map) mapper
-                .convertValue(response.get("stamp_by_emotion"), Map.class)
-                .entrySet().stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+                "Moo가 그동안 " + getUser(kakaoId).getUsername() + "님이 찍은 스탬프를 정리해왔다무!🥬\n" +
+                "📌 총 " + response.get("total_stamp") + "개의 스탬프를 찍었다무!\n";
+        Map stamp_by_emotion = mapper.convertValue(response.get("stamp_by_emotion"), Map.class);
+
+        // TODO - 정렬해야함
+//        stamp_by_emotion.entrySet().stream()
+//                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+
         // how to sort stamp_by_emotion by value order by desc
         // https://stackoverflow.com/questions/109383/sort-a-mapkey-value-by-values-java
         for (Object key : stamp_by_emotion.keySet())
