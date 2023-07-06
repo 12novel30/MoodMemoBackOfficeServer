@@ -47,8 +47,10 @@ public class StampService {
 
     public DailyReportDto.Response createDailyReport(String kakaoId,
                                                      LocalDate date) {
-        return aiService.sendDailyReport(
+        DailyReportDto.Response response = aiService.sendDailyReport(
                 getDailyReportRequestDto(kakaoId, date));
+        log.info("!!finish creating!!");
+        return response;
     }
 
     @Transactional(readOnly = true)
