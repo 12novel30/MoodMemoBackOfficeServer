@@ -66,4 +66,18 @@ public class StampDto {
                     .build();
         }
     }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Image {
+        private String imageUrl;
+
+        public static Image fromDocument(Stamps stamps) {
+            return Image.builder()
+                    .imageUrl(stamps.getImageUrl())
+                    .build();
+        }
+    }
 }

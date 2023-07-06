@@ -32,4 +32,11 @@ public interface StampRepository extends MongoRepository<Stamps, String> {
     List<Stamps> findByKakaoIdAndDateTimeBetween(String kakaoId,
                                                  LocalDateTime startDateTime,
                                                  LocalDateTime endDateTime);
+
+
+    // please create find By KakaoId And DateTime BetweenOrderByDateTime and image url is not null
+    List<Stamps> findByKakaoIdAndDateTimeBetweenAndImageUrlIsNotNullOrderByDateTime(
+            String kakaoId,
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime);
 }

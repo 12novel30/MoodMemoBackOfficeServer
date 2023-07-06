@@ -63,6 +63,14 @@ public class BackOfficeController {
                 LocalDate.now().minusDays(1));
     }
 
+    @GetMapping("/imageLet/{kakaoId}")
+    public List<StampDto.Image> getImageLet(@PathVariable final String kakaoId) {
+        // 새벽 3시 이후, "어제" 03:00 ~ 오늘 02:59 사이의 스탬프리스트를 가져온다.
+        return userService.getImageLet(
+                kakaoId,
+                LocalDate.now().minusDays(1));
+    }
+
     @PostMapping("/dailyReport")
     public HttpStatus upsertDailyReport(@RequestBody DailyReportDto.Response dr) {
         return dailyReportService.upsertDailyReport(dr);
