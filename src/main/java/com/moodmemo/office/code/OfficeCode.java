@@ -11,9 +11,9 @@ public enum OfficeCode {
     DEV("dev"),
     USER("user"),
 
-    LOCAL_FOLDER("tmpImage"),
-    // S3 folder name,
-    SEASON_3_FOLDER("season3")
+    // 둘 다 사용하는 바
+//    LOCAL_FOLDER("/app/photos"), // ec2 folder name - mount 해야한다고 한다
+    SEASON_3_FOLDER("season3"), // S3 folder name
 
 
     // 남자는 true

@@ -109,10 +109,7 @@ public class KakaoService {
         String kakaoImageUrl = getParamFromDetailParams(params, "imageUrl");
         kakaoImageUrl = kakaoImageUrl.substring(1, kakaoImageUrl.length() - 1);
 
-        // get time from params
-
-
-        // validate map has some key
+        // if map has PARAMS_TIME then change localDateTime
         LocalDateTime localDateTime = LocalDateTime.now();
         ObjectMapper mapper = new ObjectMapper();
         if (mapper.convertValue(mapper.convertValue(params.get("action"), Map.class).get("detailParams"), Map.class)
@@ -124,31 +121,19 @@ public class KakaoService {
                     LocalTime.parse(strTime.substring(1, strTime.length() - 1)));
         }
 
-        // todo - download file from image url (kakao)
-//        // create method that convert URL to  MultipartFile
-//        URL url = new URL(kakaoImageUrl);
-//        File file = new File(url.getFile());
-        String imageURL = "https://blog.kakaocdn.net/dn/VIxFi/btqZqqf3QFS/n2otuLtHQo8TQVOwMAmmbk/img.png";
-        s3UploaderService.kakaoImageUrlSaveToLocal(imageURL, "testImageName");
-        // local file to MultipartFile
-//        File file = new File("testImageName");
-//        BufferedImage bufferedImage = ImageIO.read(file);
-        // todo - save image file to S3
-        // todo - save image url (kakao -> s3 change) to DB
-//        return StampDto.Dummy.builder()
-//                .kakaoId(getKakaoIdParams(params))
-//                .dateTime(LocalDateTime.now())
-//                .stamp(stamp)
-//                .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
-//                .imageUrl(s3UploaderService.upload(file, SEASON_3_FOLDER.getDescription()))
-//                .build();
+        // get kakaoId from params
+        String kakaoId = getKakaoIdParams(params);
+
+        // save image to S3
+        String s3Url = s3UploaderService.uploadImageFromUrl
+                (kakaoImageUrl, kakaoId, localDateTime);
 
         return StampDto.Dummy.builder()
-                .kakaoId(getKakaoIdParams(params))
+                .kakaoId(kakaoId)
                 .dateTime(localDateTime)
                 .stamp(stamp)
                 .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
-                .imageUrl(kakaoImageUrl)
+                .imageUrl(s3Url)
                 .build();
     }
 

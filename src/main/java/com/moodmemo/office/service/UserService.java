@@ -351,6 +351,17 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public List<StampDto.Image> getImageLet(
+            String kakaoId, LocalDate date) {
+        List<LocalDateTime> timeRange = stampService.getTimeRangeByOneDay(date);
+        return stampRepository.findByKakaoIdAndDateTimeBetweenAndImageUrlIsNotNullOrderByDateTime(
+                        kakaoId, timeRange.get(0), timeRange.get(1))
+                .stream()
+                .map(StampDto.Image::fromDocument)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<Users> getuserEntityAll() {
         return userRepository.findAll();
     }
@@ -364,7 +375,7 @@ public class UserService {
                 "📌 총 " + response.get("total_stamp") + "개의 스탬프를 찍었다무!\n";
         Map stamp_by_emotion = mapper.convertValue(response.get("stamp_by_emotion"), Map.class);
 
-        // TODO - 정렬해야함
+        // TODO - 정렬해야함 -> 준하가 정렬해준다고 했던가 ..?
 //        stamp_by_emotion.entrySet().stream()
 //                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
 

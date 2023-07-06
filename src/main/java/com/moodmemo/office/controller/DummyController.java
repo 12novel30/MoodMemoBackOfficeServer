@@ -4,24 +4,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.moodmemo.office.domain.Users;
 import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
-import com.moodmemo.office.service.*;
+import com.moodmemo.office.service.KakaoService;
+import com.moodmemo.office.service.S3UploaderService;
+import com.moodmemo.office.service.StampService;
+import com.moodmemo.office.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.moodmemo.office.code.EventCode.WEEK1;
-import static com.moodmemo.office.code.OfficeCode.LOCAL_FOLDER;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +33,6 @@ public class DummyController {
     private final StampService stampService;
     private final KakaoService kakaoService;
     private final S3UploaderService s3UploaderService;
-    private final S3Uploader2 s3Uploader2;
 
     public UserDto.Response createUser(@Valid @RequestBody UserDto.Dummy request) {
         return userService.createUser(request);
@@ -58,15 +56,14 @@ public class DummyController {
 
     }
 
-
     @GetMapping("/tmp2")
     public void tm2p() {
-        LocalTime tmp4 = LocalTime.of(2,59);
-        LocalTime tmp1 = LocalTime.of(3,0);
-        LocalTime tmp2 = LocalTime.of(3,1);
-        LocalTime tmp3 = LocalTime.of(23,59);
-        LocalTime tmp5 = LocalTime.of(0,0);
-        LocalTime tmp6 = LocalTime.of(0,1);
+        LocalTime tmp4 = LocalTime.of(2, 59);
+        LocalTime tmp1 = LocalTime.of(3, 0);
+        LocalTime tmp2 = LocalTime.of(3, 1);
+        LocalTime tmp3 = LocalTime.of(23, 59);
+        LocalTime tmp5 = LocalTime.of(0, 0);
+        LocalTime tmp6 = LocalTime.of(0, 1);
 
 
         if (kakaoService.validateTimeIs3AMtoMidnight(tmp4))
@@ -93,37 +90,16 @@ public class DummyController {
         return userService.tmpRnag(kakaoId);
     }
 
-    @PostMapping("/kakao-image")
+    @PostMapping("/kakao-image/upload")
     public String kakaoImage(@RequestBody final String imageUrl) {
-        return s3UploaderService.kakaoImageUrlSaveToLocal(
-                imageUrl, "testImageName");
+        return s3UploaderService.uploadFileToS3(
+                s3UploaderService.kakaoImageUrlSaveToLocal(
+                        imageUrl, "kakaoid", LocalDateTime.now()));
     }
 
-//    @PostMapping("/kakao-image/2")
-//    public MultipartFile kakaoImage2(@RequestBody final String imageUrl) throws URISyntaxException, IOException {
-//        return s3UploaderService.downloadPhoto(imageUrl);
-//    }
-
-
-
-    @GetMapping("/kakao-image/convert")
-    public MultipartFile kakaoImage2() throws IOException {
-        return s3UploaderService.convertFileToMultipartFile("testImageName");
-    }
     @DeleteMapping("/kakao-image/delete")
     public void kakaoImage3() throws IOException {
         s3UploaderService.deleteLocalImage("testImageName");
-    }
-
-    // create uploadFileToS3 method
-    @PostMapping("/kakao-image/upload")
-    public void uploadFileToS3() throws IOException {
-        File file = new File(LOCAL_FOLDER.getDescription() + "/" + "testImageName" + ".jpg");
-        if (file.exists())
-            log.info("file exists");
-        else
-            log.info("file not exists");
-        s3UploaderService.store();
     }
 
     @GetMapping(value = "/statistics/user/{kakaoId}",

@@ -2,7 +2,6 @@ package com.moodmemo.office.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moodmemo.office.dto.DailyReportDto;
 import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.service.KakaoService;
 import com.moodmemo.office.service.S3UploaderService;
@@ -263,19 +262,9 @@ public class SkillController {
         // parameter logging
         log.info(kakaoService.getParameterToString(params));
 
-        // save stamp - 일단 시간 변경은 안했다고 가정
-        // todo - 시간 변경이 되었다면, if null 처리하기
+        // get stamp & image (& time) parameter
         String kakaoId = stampService.createStamp(
                 kakaoService.getStampWithImageParams(params)).getKakaoId();
-
-
-//        Map<String, Object> action_params = getParamsFromAction(params);
-//        targetStamp.setMemoLet(action_params.get("edit_memolet").toString());
-
-//        String objectURL = s3UploaderService.upload(file, "office");
-//        System.out.println(objectURL);
-//        return ResponseEntity.ok(userservice.updateUserImage(userId, objectURL));
-
 
         // update week n 의 스탬프 개수
         userService.updateWeekCount(kakaoId, stampService.validateWeek(), 1);

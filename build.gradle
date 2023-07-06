@@ -24,11 +24,6 @@ dependencies {
 	implementation 'org.springframework:spring-web:5.3.10'
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
-	// for S3
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-	// for S3, multifile -> file
-	implementation 'commons-io:commons-io:2.4'
-
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -40,17 +35,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 
-	// for S3
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-	implementation 'software.amazon.awssdk:s3:2.17.98' // 원하는 버전으로 대체 -> 사진 업로드에 사용함
-	// for S3, multifile -> file
-	// https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload
-	implementation 'commons-fileupload:commons-fileupload:1.4'
-	// https://mvnrepository.com/artifact/commons-io/commons-io
-	implementation 'commons-io:commons-io:2.4'
-	// https://mvnrepository.com/artifact/org.springframework/spring-test
-	implementation 'org.springframework:spring-test:5.3.27'
-
+	// AWS SDK for Java - Core
+	implementation 'software.amazon.awssdk:s3:2.17.74'
 
 }
 
