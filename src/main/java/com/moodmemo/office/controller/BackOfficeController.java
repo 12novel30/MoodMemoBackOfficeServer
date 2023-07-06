@@ -27,11 +27,6 @@ public class BackOfficeController {
     private final StampService stampService;
     private final DailyReportService dailyReportService;
 
-//    @GetMapping("/home")
-//    public List<UserDto.Response> getUserList() {
-//        return userService.getAllUsers();
-//    }
-
     @GetMapping(value = "/dailyReport/{kakaoId}",
             produces = "application/json;charset=UTF-8")
     public DailyReportDto.Response getDailyReportFromAI(
@@ -54,7 +49,7 @@ public class BackOfficeController {
 
 
     @GetMapping("/userStampCount")
-    public HashMap<String, Object> getUserStampCount() {
+    public HashMap<String, Object> getUserStampCountList() {
         // 새벽 3시 이후, "어제" 03:00 ~ 오늘 02:59 사이의 스탬프리스트를 가져온다.
         return userService.getUserStampCount(
                 LocalDate.now().minusDays(1));

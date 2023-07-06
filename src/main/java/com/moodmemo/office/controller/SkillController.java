@@ -2,6 +2,7 @@ package com.moodmemo.office.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moodmemo.office.dto.DailyReportDto;
 import com.moodmemo.office.dto.UserDto;
 import com.moodmemo.office.service.KakaoService;
 import com.moodmemo.office.service.S3UploaderService;
@@ -9,7 +10,6 @@ import com.moodmemo.office.service.StampService;
 import com.moodmemo.office.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -269,7 +269,6 @@ public class SkillController {
                 kakaoService.getStampWithImageParams(params)).getKakaoId();
 
 
-
 //        Map<String, Object> action_params = getParamsFromAction(params);
 //        targetStamp.setMemoLet(action_params.get("edit_memolet").toString());
 
@@ -278,14 +277,19 @@ public class SkillController {
 //        return ResponseEntity.ok(userservice.updateUserImage(userId, objectURL));
 
 
-
-
-
-
         // update week n 의 스탬프 개수
         userService.updateWeekCount(kakaoId, stampService.validateWeek(), 1);
 
         return kakaoService.getStringObjectHashMap("사진 입력 버전 memolet 발화리턴");
+    }
+
+    @PostMapping(value = "/statistics/user",
+            produces = "application/json;charset=UTF-8")
+    public HashMap<String, Object> callStatisticsFromAI(
+            @Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
+        return kakaoService.getStringObjectHashMap(
+                userService.getStatistics(
+                        kakaoService.getKakaoIdParams(params)));
     }
 
 

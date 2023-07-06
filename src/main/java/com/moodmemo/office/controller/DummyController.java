@@ -1,5 +1,6 @@
 package com.moodmemo.office.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.moodmemo.office.domain.Users;
 import com.moodmemo.office.dto.StampDto;
 import com.moodmemo.office.dto.UserDto;
@@ -15,7 +16,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.moodmemo.office.code.EventCode.WEEK1;
 import static com.moodmemo.office.code.OfficeCode.LOCAL_FOLDER;
@@ -121,5 +124,13 @@ public class DummyController {
         else
             log.info("file not exists");
         s3UploaderService.store();
+    }
+
+    @GetMapping(value = "/statistics/user/{kakaoId}",
+            produces = "application/json;charset=UTF-8")
+    public HashMap<String, Object> getDailyReportFromAI(
+            @PathVariable final String kakaoId) throws JsonProcessingException {
+        return kakaoService.getStringObjectHashMap(
+                userService.getStatistics(kakaoId));
     }
 }
