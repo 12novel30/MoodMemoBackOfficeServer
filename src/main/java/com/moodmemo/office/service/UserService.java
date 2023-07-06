@@ -322,7 +322,7 @@ public class UserService {
                     "\n\n" + strDate + "의 일기는" +
                     "\n아래 링크를 클릭하면 확인 & 수정할 수 있다무 ✨" +
                     "\n\n링크: " +
-                    "http://3.34.55.218/dailyReport/" +
+                    "http://3.34.55.218/#/dailyReport/" +
                     getUser(kakaoId).getKakaoId()
 //                            .getId() // TODO - 나중에 변경 일단 kakaoid로
 //                    + "/" + strDate
