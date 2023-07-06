@@ -80,7 +80,7 @@ public class KakaoService {
     public StampDto.Dummy getTimeChangedStampParams(Map<String, Object> params) throws JsonProcessingException {
         Map<String, Object> action_params = getParamsFromAction(params);
 
-        // get time from params
+
         String strTime = getParamFromDetailParams(params, PARAMS_TIME.getDescription());
         LocalDateTime localDateTime = getLocalDateTimeBy3AM(
                 LocalDate.now(),
@@ -109,20 +109,30 @@ public class KakaoService {
         String kakaoImageUrl = getParamFromDetailParams(params, "imageUrl");
         kakaoImageUrl = kakaoImageUrl.substring(1, kakaoImageUrl.length() - 1);
 
+        // get time from params
+
+
+        // validate map has some key
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ObjectMapper mapper = new ObjectMapper();
+        if (mapper.convertValue(mapper.convertValue(params.get("action"), Map.class).get("detailParams"), Map.class)
+                .containsKey(PARAMS_TIME.getDescription())) {
+            // 입력 했다는 뜻
+            String strTime = getParamFromDetailParams(params, PARAMS_TIME.getDescription());
+            localDateTime = getLocalDateTimeBy3AM(
+                    LocalDate.now(),
+                    LocalTime.parse(strTime.substring(1, strTime.length() - 1)));
+        }
 
         // todo - download file from image url (kakao)
-
 //        // create method that convert URL to  MultipartFile
 //        URL url = new URL(kakaoImageUrl);
 //        File file = new File(url.getFile());
-
         String imageURL = "https://blog.kakaocdn.net/dn/VIxFi/btqZqqf3QFS/n2otuLtHQo8TQVOwMAmmbk/img.png";
         s3UploaderService.kakaoImageUrlSaveToLocal(imageURL, "testImageName");
         // local file to MultipartFile
 //        File file = new File("testImageName");
 //        BufferedImage bufferedImage = ImageIO.read(file);
-
-
         // todo - save image file to S3
         // todo - save image url (kakao -> s3 change) to DB
 //        return StampDto.Dummy.builder()
@@ -132,9 +142,10 @@ public class KakaoService {
 //                .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
 //                .imageUrl(s3UploaderService.upload(file, SEASON_3_FOLDER.getDescription()))
 //                .build();
+
         return StampDto.Dummy.builder()
                 .kakaoId(getKakaoIdParams(params))
-                .dateTime(LocalDateTime.now())
+                .dateTime(localDateTime)
                 .stamp(stamp)
                 .memoLet(action_params.get(PARAMS_MEMOLET.getDescription()).toString())
                 .imageUrl(kakaoImageUrl)
