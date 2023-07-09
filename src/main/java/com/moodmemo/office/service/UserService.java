@@ -375,14 +375,21 @@ public class UserService {
                 "📌 총 " + response.get("total_stamp") + "개의 스탬프를 찍었다무!\n";
         Map stamp_by_emotion = mapper.convertValue(response.get("stamp_by_emotion"), Map.class);
 
-        // TODO - 정렬해야함 -> 준하가 정렬해준다고 했던가 ..?
-//        stamp_by_emotion.entrySet().stream()
-//                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+        // Map을 List로 변환
+        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(stamp_by_emotion.entrySet());
 
-        // how to sort stamp_by_emotion by value order by desc
-        // https://stackoverflow.com/questions/109383/sort-a-mapkey-value-by-values-java
-        for (Object key : stamp_by_emotion.keySet())
-            returnMessage += "\n" + key + " : " + stamp_by_emotion.get(key) + "개";
+        // 값을 기준으로 정렬
+        Collections.sort(entryList, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> entry1, Map.Entry<String, Integer> entry2) {
+                return entry2.getValue().compareTo(entry1.getValue());
+            }
+        });
+
+        // 정렬된 결과 출력
+        for (Map.Entry<String, Integer> entry : entryList) {
+            returnMessage += "\n" + entry.getKey() + " : " + entry.getValue() + "개";
+        }
         return returnMessage;
     }
 }

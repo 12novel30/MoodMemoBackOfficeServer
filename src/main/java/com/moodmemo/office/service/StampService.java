@@ -74,6 +74,11 @@ public class StampService {
 
     public List<LocalDateTime> getTimeRangeByOneDay(LocalDate date) {
         LocalTime standard = LocalTime.of(3, 0).minusNanos(1);
+
+        if (LocalTime.now().isBefore(standard)
+                && LocalTime.now().isAfter(LocalTime.of(0, 0)))
+            date = date.minusDays(1);
+
         return List.of(
                 // 해당 일자의 새벽 3시 부터
                 LocalDateTime.of(date, standard),
@@ -105,8 +110,6 @@ public class StampService {
     }
 
     private static boolean validateIsInWeekRange(List<LocalDate> week, LocalDate today) {
-
-
         return (today.isAfter(week.get(0)) && today.isBefore(week.get(1)))
                 || today.isEqual(week.get(0))
                 || today.isEqual(week.get(1));
