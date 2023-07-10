@@ -1,10 +1,7 @@
 package com.moodmemo.office.dto;
 
 import com.moodmemo.office.domain.Users;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 public class UserDto {
 
@@ -18,6 +15,24 @@ public class UserDto {
         private int age;
         private boolean gender;
         private String job;
+    }
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class StampCount {
+        private String id;
+        private String kakaoId;
+        private String username;
+        @Setter
+        private int stampCount;
+        public static StampCount fromDocuments(Users user) {
+            return StampCount.builder()
+                    .id(user.getId())
+                    .kakaoId(user.getKakaoId())
+                    .username(user.getUsername())
+                    .build();
+        }
     }
 
     @Getter
@@ -77,6 +92,28 @@ public class UserDto {
                     .age(user.getAge())
                     .job(user.getJob())
                     .gender(gender)
+                    .build();
+        }
+
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Rank {
+        private String kakaoId;
+        private String username;
+        private int week1, week2, week3, week4;
+
+        public static Rank fromDocument(Users user) {
+            return Rank.builder()
+                    .kakaoId(user.getKakaoId())
+                    .username(user.getUsername())
+                    .week1(user.getWeek1())
+                    .week2(user.getWeek2())
+                    .week3(user.getWeek3())
+                    .week4(user.getWeek4())
                     .build();
         }
 
