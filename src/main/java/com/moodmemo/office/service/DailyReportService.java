@@ -58,9 +58,9 @@ public class DailyReportService {
     }
 
     @Transactional
-    private HttpStatus updateDailyReportEntity(DailyReportDto.Response dr,
-                                               DailyReport dailyReport,
-                                               OfficeCode who) {
+    public HttpStatus updateDailyReportEntity(DailyReportDto.Response dr,
+                                              DailyReport dailyReport,
+                                              OfficeCode who) {
         // username 채우기
         if (dailyReport.getUsername() == null) {
             dailyReport.setUsername(
@@ -91,7 +91,7 @@ public class DailyReportService {
         else // USER
             dailyReport.setUpdateByUserCnt(dailyReport.getUpdateByUserCnt() + 1);
 
-        return ResponseEntity.ok(dailyReportRepository.save(dailyReport))
+        return (HttpStatus) ResponseEntity.ok(dailyReportRepository.save(dailyReport))
                 .getStatusCode();
     }
 
@@ -124,7 +124,7 @@ public class DailyReportService {
             dailyReport.setLikeCnt(dailyReport.getLikeCnt() + 1);
         else dailyReport.setLikeCnt(1);
 
-        return ResponseEntity.ok(dailyReportRepository.save(dailyReport))
+        return (HttpStatus) ResponseEntity.ok(dailyReportRepository.save(dailyReport))
                 .getStatusCode();
     }
 

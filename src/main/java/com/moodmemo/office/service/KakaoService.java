@@ -234,7 +234,7 @@ public class KakaoService {
     }
 
     @Transactional(readOnly = true)
-    private List<Stamps> getByKakaoIdAndLocalDateTime(
+    public List<Stamps> getByKakaoIdAndLocalDateTime(
             String kakaoId, String time, LocalDate today) {
 
         LocalDateTime localDateTime = getLocalDateTimeBy3AM(
@@ -281,7 +281,7 @@ public class KakaoService {
                 nowDate,
                 LocalTime.parse(strEditTime)));
 
-        return ResponseEntity.ok(stampRepository.save(targetStamp)).getStatusCode();
+        return (HttpStatus) ResponseEntity.ok(stampRepository.save(targetStamp)).getStatusCode();
     }
 
     public HttpStatus updateStampEmo(Map<String, Object> params,
@@ -294,7 +294,7 @@ public class KakaoService {
         edit_emo = edit_emo.substring(1, edit_emo.length() - 1);
         targetStamp.setStamp(edit_emo);
 
-        return ResponseEntity.ok(stampRepository.save(targetStamp)).getStatusCode();
+        return (HttpStatus) ResponseEntity.ok(stampRepository.save(targetStamp)).getStatusCode();
     }
 
     public HttpStatus updateStampMemolet(Map<String, Object> params,
@@ -305,7 +305,7 @@ public class KakaoService {
         Map<String, Object> action_params = getParamsFromAction(params);
         targetStamp.setMemoLet(action_params.get("edit_memolet").toString());
 
-        return ResponseEntity.ok(stampRepository.save(targetStamp)).getStatusCode();
+        return (HttpStatus) ResponseEntity.ok(stampRepository.save(targetStamp)).getStatusCode();
     }
 
     public void deleteStamp(Map<String, Object> params,

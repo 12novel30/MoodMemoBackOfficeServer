@@ -7,13 +7,13 @@ import com.moodmemo.office.service.KakaoService;
 import com.moodmemo.office.service.S3UploaderService;
 import com.moodmemo.office.service.StampService;
 import com.moodmemo.office.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class SkillController {
             @Valid @RequestBody Map<String, Object> params)
             throws JsonProcessingException {
 
-        log.info(kakaoService.getParameterToString(params));
+        log.info(KakaoService.getParameterToString(params));
 
         String returnText;
         UserDto.Dummy userDto = kakaoService.getInfoParams(params);
@@ -52,7 +52,7 @@ public class SkillController {
             returnText = "정보가 입력되었습니다!";
         }
 
-        return kakaoService.getStringObjectHashMap(returnText);
+        return KakaoService.getStringObjectHashMap(returnText);
     }
 
     @PostMapping("/stamp")
@@ -61,7 +61,7 @@ public class SkillController {
             throws JsonProcessingException {
 
         // parameter logging
-        log.info(kakaoService.getParameterToString(params));
+        log.info(KakaoService.getParameterToString(params));
 
         // save stamp
         String kakaoId = stampService.createStamp(
@@ -71,7 +71,7 @@ public class SkillController {
         userService.updateWeekCount(kakaoId, stampService.validateWeek(), 1);
 
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
-        return kakaoService.getStringObjectHashMap("memolet 발화리턴");
+        return KakaoService.getStringObjectHashMap("memolet 발화리턴");
     }
 
     @PostMapping("/timeChange-stamp")
@@ -80,7 +80,7 @@ public class SkillController {
             throws JsonProcessingException {
 
         // parameter logging
-        log.info(kakaoService.getParameterToString(params));
+        log.info(KakaoService.getParameterToString(params));
 
         // save stamp
         String kakaoId = stampService.createStamp(
@@ -90,7 +90,7 @@ public class SkillController {
         userService.updateWeekCount(kakaoId, stampService.validateWeek(), 1);
 
         // TODO - 여기에서 에러처리하고 그 메세지를 보내는 방향으로 수정할 것
-        return kakaoService.getStringObjectHashMap("시간 변경 버전 memolet 발화리턴");
+        return KakaoService.getStringObjectHashMap("시간 변경 버전 memolet 발화리턴");
     }
 
     @PostMapping("/validate/memolet")
@@ -98,10 +98,10 @@ public class SkillController {
             @Valid @RequestBody Map<String, Object> params)
             throws JsonProcessingException {
 
-        log.info(kakaoService.getParameterToString(params));
+        log.info(KakaoService.getParameterToString(params));
 
         HashMap<String, Object> tmp =
-                kakaoService.getValidatetHashMap(
+                KakaoService.getValidatetHashMap(
                         kakaoService.validateMemoletLength(
                                 params.get("utterance").toString()));
         return tmp;
@@ -113,9 +113,9 @@ public class SkillController {
             throws JsonProcessingException {
 
         // parameter logging
-        log.info(kakaoService.getParameterToString(params));
+        log.info(KakaoService.getParameterToString(params));
 
-        return kakaoService.getStringObjectHashMap(
+        return KakaoService.getStringObjectHashMap(
                 kakaoService.getTextFormatForStampList(
                         stampService.getStampListByDate(
                                 kakaoService.getKakaoIdParams(params))));
@@ -126,9 +126,9 @@ public class SkillController {
             @Valid @RequestBody Map<String, Object> params)
             throws JsonProcessingException {
 
-        log.info(kakaoService.getParameterToString(params));
+        log.info(KakaoService.getParameterToString(params));
 
-        return kakaoService.getStringObjectHashMap(
+        return KakaoService.getStringObjectHashMap(
                 userService.tmpRnag(
                         kakaoService.getKakaoIdParams(params)));
     }
@@ -138,9 +138,9 @@ public class SkillController {
             @Valid @RequestBody Map<String, Object> params)
             throws JsonProcessingException {
 
-        log.info(kakaoService.getParameterToString(params));
+        log.info(KakaoService.getParameterToString(params));
 
-        return kakaoService.getStringObjectHashMap(
+        return KakaoService.getStringObjectHashMap(
                 userService.getPrizePostWeek(
                         kakaoService.getKakaoIdParams(params)));
     }

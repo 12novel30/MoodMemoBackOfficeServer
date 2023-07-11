@@ -8,11 +8,11 @@ import com.moodmemo.office.service.KakaoService;
 import com.moodmemo.office.service.S3UploaderService;
 import com.moodmemo.office.service.StampService;
 import com.moodmemo.office.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
