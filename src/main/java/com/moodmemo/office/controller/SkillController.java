@@ -150,11 +150,24 @@ public class SkillController {
             @Valid @RequestBody Map<String, Object> params)
             throws JsonProcessingException {
 
-        log.info(kakaoService.getParameterToString(params));
+        log.info(KakaoService.getParameterToString(params));
 
         // 자정이 넘은 뒤, 어제의 DR 을 가져오는 것으로 생각함.
-        return kakaoService.getStringObjectHashMap(
+        return KakaoService.getStringObjectHashMap(
                 userService.getUserDRYesterday(
+                        kakaoService.getKakaoIdParams(params),
+                        LocalDate.now().minusDays(1)));
+    }
+    @PostMapping("/dailyReport/yesterday/tmp")
+    public HashMap<String, Object> callDRAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        log.info(KakaoService.getParameterToString(params));
+
+        // 자정이 넘은 뒤, 어제의 DR 을 가져오는 것으로 생각함.
+        return KakaoService.getStringObjectHashMap(
+                userService.getUserDR(
                         kakaoService.getKakaoIdParams(params),
                         LocalDate.now().minusDays(1)));
     }

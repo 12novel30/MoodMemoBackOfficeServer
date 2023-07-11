@@ -330,6 +330,22 @@ public class UserService {
         } else return "🥬 : 어제 일기는 못 만들었다무.. 💦" +
                 "\n오늘은 스탬프 2개 이상 남겨줘라무 !";
     }
+    public String getUserDR(String kakaoId, LocalDate date) {
+        // 어제의 스탬프가 2개 이상일 때에만 일기 생성
+        if (getStampCount(kakaoId, date) >= 2) {
+            String strDate = date.format(drDateFormat);
+            return "🥬 Moo가 데일리 레포트 완성했다무! 🥬" +
+                    "\n\n" + strDate + "의 일기는" +
+                    "\n아래 링크를 클릭하면 확인 & 수정할 수 있다무 ✨" +
+                    "\n\n링크: " +
+                    "http://3.34.55.218/#/dailyReport/" +
+                    getUser(kakaoId).getKakaoId()
+//                            .getId() // TODO - 나중에 변경 일단 kakaoid로
+                    + "/" + strDate
+                    ;
+        } else return "🥬 : 어제 일기는 못 만들었다무.. 💦" +
+                "\n오늘은 스탬프 2개 이상 남겨줘라무 !";
+    }
 
     @Transactional(readOnly = true)
     private int getStampCount(String kakaoId, LocalDate date) {

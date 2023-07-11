@@ -27,6 +27,15 @@ public class UserController {
                 kakaoId, LocalDate.now().minusDays(1));
     }
 
+    @GetMapping(value = "/dailyReport/user/{kakaoId}/{date}",
+            produces = "application/json;charset=UTF-8")
+    public DailyReportDto.Response tmp(
+            @PathVariable(value = "date") final String date,
+            @PathVariable(value = "kakaoId") final String kakaoId) {
+        // 자정이 넘은 뒤, 어제의 DR 을 가져오는 것으로 생각함.
+        return dailyReportService.tmp(kakaoId, date);
+    }
+
     @PutMapping(value = "/dailyReport/user",
             produces = "application/json;charset=UTF-8")
     public HttpStatus updateDailyReportByUser(@RequestBody DailyReportDto.Response dr) {

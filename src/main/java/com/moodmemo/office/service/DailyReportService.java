@@ -114,6 +114,14 @@ public class DailyReportService {
                         .getKakaoId(),
                 date);
     }
+    @Transactional(readOnly = true)
+    public DailyReportDto.Response tmp(String kakaoId, String date) {
+        return getDailyReportDBVersion(
+                userRepository.findByKakaoId(kakaoId)
+                        .orElseThrow(() -> new OfficeException(NO_USER))
+                        .getKakaoId(),
+                LocalDate.parse(date));
+    }
 
     public HttpStatus updateLikeCnt(DailyReportDto.Simple simple) {
         DailyReport dailyReport = dailyReportRepository.findByKakaoIdAndDate(
