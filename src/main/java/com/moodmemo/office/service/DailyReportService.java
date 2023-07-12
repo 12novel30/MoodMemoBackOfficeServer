@@ -62,12 +62,11 @@ public class DailyReportService {
                                               DailyReport dailyReport,
                                               OfficeCode who) {
         // username 채우기
-        if (dailyReport.getUsername() == null) {
+        if (dailyReport.getUsername() == null)
             dailyReport.setUsername(
                     userRepository.findByKakaoId(dr.getKakaoId())
                             .orElseThrow(() -> new OfficeException(NO_USER))
                             .getUsername());
-        }
 
         if (dr.getKakaoId() != null)
             dailyReport.setKakaoId(dr.getKakaoId());
@@ -114,6 +113,7 @@ public class DailyReportService {
                         .getKakaoId(),
                 date);
     }
+
     @Transactional(readOnly = true)
     public DailyReportDto.Response tmp(String kakaoId, String date) {
         return getDailyReportDBVersion(

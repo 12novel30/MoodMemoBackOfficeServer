@@ -7,6 +7,7 @@ import com.moodmemo.office.service.KakaoService;
 import com.moodmemo.office.service.S3UploaderService;
 import com.moodmemo.office.service.StampService;
 import com.moodmemo.office.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "[카카오 스킬서버용 API]")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -158,6 +160,7 @@ public class SkillController {
                         kakaoService.getKakaoIdParams(params),
                         LocalDate.now().minusDays(1)));
     }
+
     @PostMapping("/dailyReport/yesterday/tmp")
     public HashMap<String, Object> callDRAPI(
             @Valid @RequestBody Map<String, Object> params)

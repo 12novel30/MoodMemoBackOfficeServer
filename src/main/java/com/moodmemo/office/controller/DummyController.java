@@ -8,6 +8,7 @@ import com.moodmemo.office.service.KakaoService;
 import com.moodmemo.office.service.S3UploaderService;
 import com.moodmemo.office.service.StampService;
 import com.moodmemo.office.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static com.moodmemo.office.code.EventCode.WEEK1;
 
+@Tag(name = "[백엔드 테스트용 API]")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
