@@ -68,17 +68,17 @@ public class DummyController {
         LocalTime tmp6 = LocalTime.of(0, 1);
 
 
-        if (kakaoService.validateTimeIs3AMtoMidnight(tmp4))
+        if (kakaoService.validateTimeIs2AMtoMidnight(tmp4))
             log.info("{}", tmp4);
-        if (kakaoService.validateTimeIs3AMtoMidnight(tmp1))
+        if (kakaoService.validateTimeIs2AMtoMidnight(tmp1))
             log.info("{}", tmp1);
-        if (kakaoService.validateTimeIs3AMtoMidnight(tmp2))
+        if (kakaoService.validateTimeIs2AMtoMidnight(tmp2))
             log.info("{}", tmp2);
-        if (kakaoService.validateTimeIs3AMtoMidnight(tmp3))
+        if (kakaoService.validateTimeIs2AMtoMidnight(tmp3))
             log.info("{}", tmp3);
-        if (kakaoService.validateTimeIs3AMtoMidnight(tmp5))
+        if (kakaoService.validateTimeIs2AMtoMidnight(tmp5))
             log.info("{}", tmp5);
-        if (kakaoService.validateTimeIs3AMtoMidnight(tmp6))
+        if (kakaoService.validateTimeIs2AMtoMidnight(tmp6))
             log.info("{}", tmp6);
     }
 

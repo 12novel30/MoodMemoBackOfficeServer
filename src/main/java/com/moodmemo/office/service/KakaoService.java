@@ -69,8 +69,8 @@ public class KakaoService {
                 .build();
     }
 
-    public Boolean validateTimeIs3AMtoMidnight(LocalTime time) {
-        if (time.isAfter(LocalTime.of(3, 0).minusNanos(1))
+    public Boolean validateTimeIs2AMtoMidnight(LocalTime time) {
+        if (time.isAfter(LocalTime.of(2, 0).minusNanos(1))
                 && time.isBefore(LocalTime.of(0, 0).minusNanos(1)))
             return true;
         else
@@ -255,8 +255,8 @@ public class KakaoService {
          *      -> 어제 날짜로
          * else -> 오늘 날짜로
          * */
-        if (!validateTimeIs3AMtoMidnight(LocalTime.now())
-                && validateTimeIs3AMtoMidnight(targetTime))
+        if (!validateTimeIs2AMtoMidnight(LocalTime.now())
+                && validateTimeIs2AMtoMidnight(targetTime))
             return LocalDateTime.of(today.minusDays(1), targetTime);
         else
             return LocalDateTime.of(today, targetTime);
