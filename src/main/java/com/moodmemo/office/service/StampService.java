@@ -73,7 +73,7 @@ public class StampService {
     }
 
     public List<LocalDateTime> getTimeRangeByOneDay(LocalDate date) {
-        LocalTime standard = LocalTime.of(3, 0).minusNanos(1);
+        LocalTime standard = LocalTime.of(2, 0).minusNanos(1);
 
         if (LocalTime.now().isBefore(standard)
                 && LocalTime.now().isAfter(LocalTime.of(0, 0)))

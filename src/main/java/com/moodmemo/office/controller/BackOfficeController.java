@@ -59,8 +59,7 @@ public class BackOfficeController {
             @PathVariable(value = "date") final String date,
             @PathVariable(value = "kakaoId") final String kakaoId) {
         // 자정이 넘은 뒤, 어제의 DR 을 가져오는 것으로 생각함.
-        return dailyReportService.tmp(
-                kakaoId, date);
+        return dailyReportService.getDailyReportDBVersion(kakaoId, LocalDate.parse(date));
     }
 
     @Operation(summary = "메인 화면-유저 이름, 아이디, 어제 let 의 개수")
@@ -80,13 +79,22 @@ public class BackOfficeController {
                 LocalDate.now().minusDays(1));
     }
 
-    @Operation(summary = "어제 유저가 찍은 사진 리스트를 가져오는 메소드", description = "카카오아이디만 보내주시면 됩니다!")
+    @Operation(summary = "[어제] 유저가 찍은 사진 리스트를 가져오는 메소드", description = "날짜 변경 가능해지면 수정될 예정입니다!")
     @GetMapping("/imageLet/{kakaoId}")
-    public List<StampDto.Image> getImageLet(@PathVariable final String kakaoId) {
+    public List<StampDto.Image> getImageLetYesterday(@PathVariable final String kakaoId) {
         // 새벽 3시 이후, "어제" 03:00 ~ 오늘 02:59 사이의 스탬프리스트를 가져온다.
         return userService.getImageLet(
                 kakaoId,
                 LocalDate.now().minusDays(1));
+    }
+    @Operation(summary = "유저가 찍은 사진 리스트를 가져오는 메소드", description = "FE testing")
+    @GetMapping("/imageLet/{kakaoId}/{date}")
+    public List<StampDto.Image> getImageLet(@PathVariable(value = "date") final String date,
+                                            @PathVariable(value = "kakaoId") final String kakaoId) {
+        // 새벽 3시 이후, "어제" 03:00 ~ 오늘 02:59 사이의 스탬프리스트를 가져온다.
+        return userService.getImageLet(
+                kakaoId,
+                LocalDate.parse(date));
     }
 
     @Operation(summary = "백오피스용 DR 업데이트 메소드")
