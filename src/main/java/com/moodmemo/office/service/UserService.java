@@ -333,7 +333,7 @@ public class UserService {
     public String getUserDR(String kakaoId, LocalDate date) {
         // 어제의 스탬프가 2개 이상일 때에만 일기 생성
         // TODO - 일기가 만들어졌으면 보내는 것으로 로직 수정
-        if (getStampCount(kakaoId, date) >= 2) {
+        if (getStampCount(kakaoId, date) >= 1) {
             String strDate = date.format(drDateFormat);
             return "🥬 Moo가 데일리 레포트 완성했다무! 🥬" +
                     "\n\n" + strDate + "의 일기는" +
@@ -345,7 +345,7 @@ public class UserService {
                     + "/" + strDate
                     ;
         } else return "🥬 : 어제 일기는 못 만들었다무.. 💦" +
-                "\n오늘은 스탬프 2개 이상 남겨줘라무 !";
+                "\n오늘은 스탬프 1개 이상 남겨줘라무 !";
     }
 
     @Transactional(readOnly = true)
