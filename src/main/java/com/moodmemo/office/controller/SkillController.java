@@ -146,6 +146,16 @@ public class SkillController {
                 userService.getPrizePostWeek(
                         kakaoService.getKakaoIdParams(params)));
     }
+    @PostMapping("/score/postWeek/winner")
+    public HashMap<String, Object> callWinnerScorePostWeekAPI(
+            @Valid @RequestBody Map<String, Object> params)
+            throws JsonProcessingException {
+
+        log.info(KakaoService.getParameterToString(params));
+
+        return KakaoService.getStringObjectHashMap(
+                userService.getWinnerScorePostWeek());
+    }
 
     @PostMapping("/dailyReport/yesterday")
     public HashMap<String, Object> callYesterdayDRAPI(
