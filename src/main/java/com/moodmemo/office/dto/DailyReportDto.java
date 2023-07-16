@@ -45,6 +45,7 @@ public class DailyReportDto {
         private String keyword2nd;
         private String keyword3rd;
         private String time;
+        private Integer likeCnt;
 
         public static Response fromDocument(DailyReport dailyReport) {
             return Response.builder()
@@ -58,6 +59,7 @@ public class DailyReportDto {
                     .keyword2nd(dailyReport.getKeyword2nd())
                     .keyword3rd(dailyReport.getKeyword3rd())
                     .time(dailyReport.getTime())
+                    .likeCnt(dailyReport.getLikeCnt())
                     .build();
         }
     }
