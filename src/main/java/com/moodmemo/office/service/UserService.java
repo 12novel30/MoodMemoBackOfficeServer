@@ -35,7 +35,16 @@ public class UserService {
     private final DateTimeFormatter drDateFormat = DateTimeFormatter.ofPattern("YYYY-MM-dd");
 
     public UserDto.Response createUser(UserDto.Dummy request) {
-        return UserDto.Response.fromDocuments(userRepository.save(Users.builder().age(request.getAge()).kakaoId(request.getKakaoId()).username(request.getUsername()).job(request.getJob()).gender(request.isGender()).build()));
+        return UserDto.Response.fromDocuments(
+                userRepository.save(
+                        Users.builder()
+                                .age(request.getAge())
+                                .kakaoId(request.getKakaoId())
+                                .username(request.getUsername())
+                                .job(request.getJob())
+                                .gender(request.isGender())
+                                .inviteCnt(0)
+                                .build()));
     }
 
     @Transactional(readOnly = true)
@@ -298,5 +307,27 @@ public class UserService {
             returnMessage += "\n" + entry.getKey() + " : " + entry.getValue() + "개";
         }
         return returnMessage;
+    }
+
+    public String inviteFriend(String kakaoId, String inviterNickName) {
+
+        log.info(inviterNickName);
+        Optional<Users> tmp = userRepository.findByUsername(inviterNickName);
+        if (tmp.isEmpty())
+            return "그런 사용자는 없다무! 초대한 사람에게 다시 물어보라무";
+        else {
+            if (tmp.get().getKakaoId().equals(kakaoId))
+                return "자기 자신을 초대할 수 없다무!";
+            Users invited = getUser(kakaoId);
+            Users inviter = tmp.orElseThrow(() -> new OfficeException(NO_USER));
+            invited.setInviteCnt(invited.getInviteCnt() + 1);
+            inviter.setInviteCnt(inviter.getInviteCnt() + 1);
+
+            userRepository.save(invited);
+            userRepository.save(inviter);
+
+            return "초대 완료! 🥬" +
+                    "\nMoo랑 일기 잘 써보자무!";
+        }
     }
 }

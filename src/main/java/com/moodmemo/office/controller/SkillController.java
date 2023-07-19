@@ -307,6 +307,19 @@ public class SkillController {
                         kakaoService.getKakaoIdParams(params)));
     }
 
+    // TODO - 처음에 사용자에게 친구초대 이벤트용 메세지를 전송?
+    // TODO - 초대받은 사용자가 지인의 닉네임을 입력
+    @PostMapping(value = "/invited",
+            produces = "application/json;charset=UTF-8")
+    public HashMap<String, Object> callInviteEvent(
+            @Valid @RequestBody Map<String, Object> params) throws JsonProcessingException {
+        log.info(kakaoService.getParameterToString(params));
+        return kakaoService.getStringObjectHashMap(
+                userService.inviteFriend(
+                        kakaoService.getKakaoIdParams(params),
+                        kakaoService.getInviteFriendParams(params)));
+    }
+
 
     /*----------아래는 예제 코드----------*/
     @RequestMapping(value = "/kkoChat/v1", method = {RequestMethod.POST, RequestMethod.GET}, headers = {"Accept=application/json"})

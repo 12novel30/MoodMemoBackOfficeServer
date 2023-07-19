@@ -29,4 +29,7 @@ public interface UserRepository extends MongoRepository<Users, String> {
     List<Users> findAllByOrderByWeek3Desc();
 
     List<Users> findAllByOrderByWeek4Desc();
+
+    // create find method by username
+    Optional<Users> findByUsername(String username);
 }

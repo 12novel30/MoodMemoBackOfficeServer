@@ -319,5 +319,9 @@ public class KakaoService {
         userService.updateWeekCount(kakaoId, stampService.validateWeek(), -1);
     }
 
+    public String getInviteFriendParams(Map<String, Object> params) throws JsonProcessingException {
+        Map<String, Object> action_params = getParamsFromAction(params);
+        return action_params.get("inviter").toString();
+    }
 
 }

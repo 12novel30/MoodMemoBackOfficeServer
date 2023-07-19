@@ -21,6 +21,7 @@ public class Users {
     private boolean gender;
     private String job;
     private int week1, week2, week3, week4;
+    private int inviteCnt;
 //
 //    public static UserDto.StampCount fromDocuments(Users user) {
 //        return UserDto.StampCount.builder()
