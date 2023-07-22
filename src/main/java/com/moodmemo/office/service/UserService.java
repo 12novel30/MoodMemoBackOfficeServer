@@ -59,6 +59,7 @@ public class UserService {
         else if (weekNum == 2) user.setWeek2(user.getWeek2() + cnt);
         else if (weekNum == 3) user.setWeek3(user.getWeek3() + cnt);
         else if (weekNum == 4) user.setWeek4(user.getWeek4() + cnt);
+        else if (weekNum == 5) user.setWeek5(user.getWeek5() + cnt);
 
         userRepository.save(user);
     }
@@ -82,6 +83,7 @@ public class UserService {
                 else if (weekNum == 2) myStampCount = top.getWeek2();
                 else if (weekNum == 3) myStampCount = top.getWeek3();
                 else if (weekNum == 4) myStampCount = top.getWeek4();
+                else if (weekNum == 5) myStampCount = top.getWeek5();
                 else return str_errorForWeekNum;
 
                 returnFormat += "축하드립니다! 총 스탬프 " + myStampCount + "개로 1등입니다." + "\n\n" + str_endingForWinner;
@@ -102,6 +104,9 @@ public class UserService {
         } else if (weekNum == 4) {
             top1StampCount = top1ForThisWeek.get(0).getWeek4();
             myStampCount = getUser(kakaoId).getWeek4();
+        } else if (weekNum == 5) {
+            top1StampCount = top1ForThisWeek.get(0).getWeek5();
+            myStampCount = getUser(kakaoId).getWeek5();
         } else return str_errorForWeekNum;
 
         returnFormat +=
@@ -161,6 +166,9 @@ public class UserService {
                 } else if (weekNum == 4) {
                     myStampCount = top.getWeek4();
                     secondCount = getSecondPlayerCount(userRepository.findAllByOrderByWeek4Desc().stream().map(Users::getWeek4).collect(Collectors.toList()));
+                } else if (weekNum == 5) {
+                    myStampCount = top.getWeek5();
+                    secondCount = getSecondPlayerCount(userRepository.findAllByOrderByWeek5Desc().stream().map(Users::getWeek5).collect(Collectors.toList()));
                 } else return str_errorForWeekNum;
 
                 returnFormat += "축하한다무! 총 스탬프 " + myStampCount + "개로 1등이다무." + "\n현재 2등의 개수는 🤫" + secondCount + "개!🤫" + "\n\n" + str_endingForWinner;
@@ -191,6 +199,12 @@ public class UserService {
         } else if (weekNum == 4) {
             myStampCount = getUser(kakaoId).getWeek4();
             List<Users> usersList = userRepository.findAllByOrderByWeek4Desc();
+            for (Users users : usersList)
+                if (users.getKakaoId().equals(kakaoId)) break;
+                else inFrontOfMe += 1;
+        } else if (weekNum == 5) {
+            myStampCount = getUser(kakaoId).getWeek5();
+            List<Users> usersList = userRepository.findAllByOrderByWeek5Desc();
             for (Users users : usersList)
                 if (users.getKakaoId().equals(kakaoId)) break;
                 else inFrontOfMe += 1;

@@ -16,6 +16,8 @@ public enum EventCode {
             LocalDate.of(2023, 7, 13)),
     WEEK4(LocalDate.of(2023, 7, 14),
             LocalDate.of(2023, 7, 20)),
+    WEEK5(LocalDate.of(2023, 7, 21),
+            LocalDate.of(2023, 7, 27)),
 
     ;
     private final LocalDate startDate, endDate;

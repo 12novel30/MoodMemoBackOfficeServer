@@ -20,7 +20,7 @@ public class Users {
     private int age;
     private boolean gender;
     private String job;
-    private int week1, week2, week3, week4;
+    private int week1, week2, week3, week4, week5;
     private int inviteCnt;
 //
 //    public static UserDto.StampCount fromDocuments(Users user) {

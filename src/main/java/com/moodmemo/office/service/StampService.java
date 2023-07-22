@@ -98,7 +98,8 @@ public class StampService {
                 List.of(WEEK1.getStartDate(), WEEK1.getEndDate()),
                 List.of(WEEK2.getStartDate(), WEEK2.getEndDate()),
                 List.of(WEEK3.getStartDate(), WEEK3.getEndDate()),
-                List.of(WEEK4.getStartDate(), WEEK4.getEndDate()));
+                List.of(WEEK4.getStartDate(), WEEK4.getEndDate()),
+                List.of(WEEK5.getStartDate(), WEEK5.getEndDate()));
 
         for (List<LocalDate> week : weeks)
             if (validateIsInWeekRange(week, LocalDate.now())) {
@@ -124,6 +125,8 @@ public class StampService {
             return convertorUsersToRank(userRepository.findTop1ByOrderByWeek3Desc());
         else if (validateWeek == 4)
             return convertorUsersToRank(userRepository.findTop1ByOrderByWeek4Desc());
+        else if (validateWeek == 5)
+            return convertorUsersToRank(userRepository.findTop1ByOrderByWeek5Desc());
         else {
             log.info("현재 주차가 없습니다.");
             return null;

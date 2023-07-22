@@ -32,4 +32,8 @@ public interface UserRepository extends MongoRepository<Users, String> {
 
     // create find method by username
     Optional<Users> findByUsername(String username);
+
+    List<Users> findAllByOrderByWeek5Desc();
+
+    List<Users> findTop1ByOrderByWeek5Desc();
 }
