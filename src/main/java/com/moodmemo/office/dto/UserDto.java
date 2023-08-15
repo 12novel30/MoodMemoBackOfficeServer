@@ -104,7 +104,7 @@ public class UserDto {
     public static class Rank {
         private String kakaoId;
         private String username;
-        private int week1, week2, week3, week4, week5;
+        private int week1, week2, week3, week4, week5, week_final;
 
         public static Rank fromDocument(Users user) {
             return Rank.builder()
@@ -115,6 +115,7 @@ public class UserDto {
                     .week3(user.getWeek3())
                     .week4(user.getWeek4())
                     .week5(user.getWeek5())
+                    .week_final(user.getWeek99())
                     .build();
         }
 

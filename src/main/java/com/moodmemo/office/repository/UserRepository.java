@@ -36,4 +36,8 @@ public interface UserRepository extends MongoRepository<Users, String> {
     List<Users> findAllByOrderByWeek5Desc();
 
     List<Users> findTop1ByOrderByWeek5Desc();
+
+    List<Users> findAllByOrderByWeek99Desc();
+
+    List<Users> findTop1ByOrderByWeek99Desc();
 }

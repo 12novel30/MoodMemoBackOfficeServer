@@ -51,7 +51,9 @@ public class SkillController {
                     "\n수정을 원하신다면, [문의] 키워드를 통해 운영진에게 문의해주세요!";
         } else { // return false
             userService.createUser(userDto);
-            returnText = "정보가 입력되었습니다!";
+            returnText = "정보가 입력되었습니다!" +
+//                    "\n🥬 : " +
+                    "\n이제 하단의 스탬프를 눌러보세요!";
         }
 
         return KakaoService.getStringObjectHashMap(returnText);

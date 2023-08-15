@@ -1,6 +1,5 @@
 package com.moodmemo.office.domain;
 
-import com.moodmemo.office.dto.UserDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +19,7 @@ public class Users {
     private int age;
     private boolean gender;
     private String job;
-    private int week1, week2, week3, week4, week5;
+    private int week1, week2, week3, week4, week5, week99;
     private int inviteCnt;
 //
 //    public static UserDto.StampCount fromDocuments(Users user) {
